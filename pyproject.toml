@@ -1,0 +1,38 @@
+[project]
+name = "kharchalens"
+version = "0.1.0"
+description = "Privacy-first expense intelligence for Indian bank statements."
+readme = "README.md"
+requires-python = ">=3.13"
+
+authors = [
+    { name = "Aakash Raj" }
+]
+
+dependencies = [
+    "streamlit>=1.47.0",
+    "pandas>=2.3.0",
+    "plotly>=6.2.0",
+    "openpyxl>=3.1.5",
+    "pyyaml>=6.0.2",
+    "rapidfuzz>=3.14.0"
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.12.0",
+    "mypy>=1.17.0"
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
