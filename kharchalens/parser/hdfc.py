@@ -9,6 +9,7 @@ import pandas as pd
 from kharchalens.models import Transaction, TransactionType
 
 from .base import StatementParser
+from kharchalens.merchant import MerchantResolver
 
 
 class HdfcParser(StatementParser):
@@ -33,9 +34,10 @@ class HdfcParser(StatementParser):
         self._validate_columns(df)
 
         transactions: list[Transaction] = []
+        resolver = MerchantResolver()
 
         for _, row in df.iterrows():
-            transaction = self._parse_row(row)
+            transaction = self._parse_row(row, resolver)
 
             if transaction is not None:
                 transactions.append(transaction)
@@ -138,7 +140,7 @@ class HdfcParser(StatementParser):
                 f"but these columns are missing: {missing}"
             )
 
-    def _parse_row(self, row: pd.Series) -> Transaction | None:
+    def _parse_row(self, row: pd.Series, resolver: MerchantResolver) -> Transaction | None:
         date_value = self._clean_cell(row.get("Date"))
         narration = self._clean_cell(row.get("Narration"))
 
@@ -165,6 +167,8 @@ class HdfcParser(StatementParser):
         reference = self._clean_cell(row.get("Chq./Ref.No.")) or None
         balance = self._parse_amount(row.get("Closing Balance"))
 
+        merchant = resolver.resolve(narration)
+
         return Transaction(
             date=transaction_date,
             narration=narration,
@@ -172,6 +176,7 @@ class HdfcParser(StatementParser):
             transaction_type=transaction_type,
             balance=balance,
             reference_number=reference,
+            merchant=merchant,
         )
 
     @staticmethod

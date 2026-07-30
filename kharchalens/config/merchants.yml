@@ -1,0 +1,40 @@
+rules:
+  - merchant: Zomato
+    contains:
+      - ZOMATO
+
+  - merchant: Swiggy
+    contains:
+      - SWIGGY
+
+  - merchant: Amazon
+    contains:
+      - AMAZON
+
+  - merchant: Flipkart
+    contains:
+      - FLIPKART
+
+  - merchant: Blinkit
+    contains:
+      - BLINKIT
+
+  - merchant: BigBasket
+    contains:
+      - BIGBASKET
+
+  - merchant: DMart
+    contains:
+      - DMART
+
+  - merchant: Uber
+    contains:
+      - UBER
+
+  - merchant: Ola
+    contains:
+      - OLA
+
+  - merchant: IRCTC
+    contains:
+      - IRCTC
