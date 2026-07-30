@@ -4,8 +4,9 @@ from pathlib import Path
 
 import yaml
 
-from .rules import MerchantRule
 from .normalizer import NarrationNormalizer
+from .preprocessing import NarrationPreprocessor
+from .rules import MerchantRule
 
 
 class MerchantResolver:
@@ -28,13 +29,14 @@ class MerchantResolver:
 
     def resolve(self, narration: str) -> str:
 
-        narration = NarrationNormalizer.normalize(narration)
+        normalized = NarrationNormalizer.normalize(narration)
+        preprocessed = NarrationPreprocessor.preprocess(normalized)
 
         for rule in self.rules:
 
             for keyword in rule.contains:
 
-                if keyword in narration:
+                if keyword in preprocessed:
                     return rule.merchant
 
         return "Unknown"

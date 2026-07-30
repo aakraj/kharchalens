@@ -38,3 +38,31 @@ rules:
   - merchant: IRCTC
     contains:
       - IRCTC
+
+  - merchant: MakeMyTrip
+    contains:
+      - MAKEMYTRIP
+
+  - merchant: Jio
+    contains:
+      - JIO CENTRE
+
+  - merchant: ACKO Insurance
+    contains:
+      - ACKO
+
+  - merchant: Max Life
+    contains:
+      - MAX LIFE
+
+  - merchant: BBMP
+    contains:
+      - BBMP
+
+  - merchant: Biryani Zone
+    contains:
+      - X3BIRIYANI
+
+  - merchant: Nexa Car Service
+    contains:
+      - BIMAL AUTO

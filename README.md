@@ -6,6 +6,13 @@ KharchaLens is a privacy-first, offline application that helps people understand
 
 ## Why KharchaLens?
 
+KharchaLens is an offline-first personal finance analyzer.
+
+- 🔒 Your bank statements stay on your computer.
+- 🚫 No account required.
+- ☁️ No cloud upload.
+- 📊 Instant financial insights.
+- 
 Many finance applications focus on budgeting or investments.
 
 KharchaLens focuses on one simple question:

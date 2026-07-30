@@ -7,10 +7,20 @@ from kharchalens.parser import HdfcParser
 from kharchalens.dashboard import (
     build_summary,
     render_monthly_spending,
+    render_top_merchants,
+)
+
+from kharchalens.analytics import (
+    merchant_coverage,
+    top_unknown_merchants,
 )
 from kharchalens.dashboard.summary import format_inr
 
 st.set_page_config(page_title="KharchaLens", page_icon="💰", layout="wide")
+developer_mode = st.sidebar.checkbox(
+    "🛠 Developer Mode",
+    value=False,
+)
 
 st.title("💰 KharchaLens")
 st.caption("Privacy-first expense intelligence for Indian bank statements")
@@ -59,6 +69,38 @@ if uploaded:
 
         st.divider()
         render_monthly_spending(transactions)
+
+        st.divider()
+        render_top_merchants(transactions)
+
+        if developer_mode:
+
+            st.divider()
+            st.subheader("🛠 Developer Insights")
+
+            coverage = merchant_coverage(transactions)
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Recognized",coverage.recognized,)
+            c2.metric("Unknown",coverage.unknown,)
+            c3.metric("Coverage",f"{coverage.coverage:.1f}%",)
+
+            unknown = top_unknown_merchants(transactions)
+
+            if unknown:
+                st.markdown("### Top Unknown Merchant Patterns")
+                import pandas as pd
+                unknown_df = pd.DataFrame(
+                    unknown,
+                    columns=[
+                        "Narration",
+                        "Count",
+                    ],
+                )
+                st.dataframe(
+                    unknown_df,
+                    use_container_width=True,
+                    hide_index=True,
+                )
 
         df = pd.DataFrame(
             [

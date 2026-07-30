@@ -7,14 +7,11 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from kharchalens.analytics import top_merchants
 from kharchalens.models import Transaction, TransactionType
 
 
 def render_monthly_spending(transactions: list[Transaction]) -> None:
-    """
-    Display monthly debit spending.
-    """
-
     monthly_totals: dict[str, Decimal] = defaultdict(lambda: Decimal("0"))
 
     for transaction in transactions:
@@ -22,7 +19,6 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
             continue
 
         month = transaction.date.strftime("%Y-%m")
-
         monthly_totals[month] += transaction.amount
 
     if not monthly_totals:
@@ -32,7 +28,7 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
         pd.DataFrame(
             {
                 "Month": list(monthly_totals.keys()),
-                "Spent": [float(value) for value in monthly_totals.values()],
+                "Spent": [float(v) for v in monthly_totals.values()],
             }
         )
         .sort_values("Month")
@@ -43,18 +39,42 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
         x="Month",
         y="Spent",
         text="Spent",
+        title="Monthly Spending",
     )
 
     fig.update_traces(texttemplate="₹%{y:,.0f}")
 
-    fig.update_layout(
-        title="Monthly Spending",
-        xaxis_title="Month",
-        yaxis_title="Amount (₹)",
-        height=420,
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def render_top_merchants(transactions: list[Transaction]) -> None:
+
+    merchants = top_merchants(transactions)
+
+    if not merchants:
+        return
+
+    df = pd.DataFrame(
+        {
+            "Merchant": [m for m, _ in merchants],
+            "Amount": [float(a) for _, a in merchants],
+        }
     )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True,
+    fig = px.bar(
+        df,
+        x="Amount",
+        y="Merchant",
+        orientation="h",
+        text="Amount",
+        title="Top Merchants",
     )
+
+    fig.update_traces(texttemplate="₹%{x:,.0f}")
+
+    fig.update_layout(
+        yaxis=dict(categoryorder="total ascending"),
+        height=450,
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
