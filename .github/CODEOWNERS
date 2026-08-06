@@ -1,0 +1,4 @@
+# Require review from the repository owner before any code is merged.
+# With branch protection "Require review from Code Owners" enabled, only
+# these owners can satisfy the approval requirement.
+* @aakraj
