@@ -71,7 +71,7 @@ Every statement is parsed and analyzed **entirely on your computer** — no acco
 ### Run the app
 
 ```bash
-git clone <your-repo-url>/kharchalens.git
+git clone https://github.com/aakraj/kharchalens.git
 cd kharchalens
 uv run streamlit run app.py
 ```
