@@ -11,32 +11,54 @@ from .rules import MerchantRule
 
 class MerchantResolver:
 
-    def __init__(self) -> None:
+    def __init__(self):
 
-        config_file = (
-                Path(__file__).parent.parent
-                / "config"
-                / "merchants.yml"
+        self.rules = []
+
+        self._load_rules(
+            Path(__file__).parent.parent
+            / "config"
+            / "merchants.yml"
         )
 
-        with open(config_file, encoding="utf-8") as file:
-            config = yaml.safe_load(file)
+        self._load_rules(
+            Path.cwd()
+            / "local_data"
+            / "merchants.local.yml"
+        )
 
-        self.rules: list[MerchantRule] = [
+    def _load_rules(self, path: Path):
+
+        if not path.exists():
+            return
+
+        with open(path, encoding="utf-8") as file:
+            config = yaml.safe_load(file) or {}
+
+        self.rules.extend(
             MerchantRule(**rule)
-            for rule in config["rules"]
-        ]
+            for rule in config.get("rules", [])
+        )
+
+    @staticmethod
+    def _compact(text: str) -> str:
+
+        return "".join(text.split())
 
     def resolve(self, narration: str) -> str:
 
         normalized = NarrationNormalizer.normalize(narration)
-        preprocessed = NarrationPreprocessor.preprocess(normalized)
+        preprocessed = self._compact(
+            NarrationPreprocessor.preprocess(normalized)
+        )
 
         for rule in self.rules:
 
             for keyword in rule.contains:
 
-                if keyword in preprocessed:
+                compact_keyword = self._compact(keyword)
+
+                if compact_keyword and compact_keyword in preprocessed:
                     return rule.merchant
 
         return "Unknown"

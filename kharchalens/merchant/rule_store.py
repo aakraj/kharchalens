@@ -1,0 +1,95 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+import yaml
+
+
+class MerchantRuleStore:
+
+    @staticmethod
+    def add_rule(
+            merchant: str,
+            keyword: str,
+            local: bool,
+    ) -> None:
+        merchant = merchant.strip()
+        keyword = keyword.strip().upper()
+
+        if not merchant:
+            raise ValueError("Merchant name cannot be empty.")
+
+        if not keyword:
+            raise ValueError("Keyword cannot be empty.")
+
+        project_root = Path.cwd()
+
+        if local:
+            file = (
+                    project_root
+                    / "local_data"
+                    / "merchants.local.yml"
+            )
+        else:
+            file = (
+                    project_root
+                    / "kharchalens"
+                    / "config"
+                    / "merchants.yml"
+            )
+
+        # Create parent folder if needed
+        file.parent.mkdir(parents=True, exist_ok=True)
+
+        # Load existing YAML
+        if file.exists():
+            with open(file, encoding="utf-8") as f:
+                config = yaml.safe_load(f) or {}
+        else:
+            config = {}
+
+        rules = config.get("rules", [])
+
+        # Add new or update the rule
+        existing_rule = None
+        for rule in rules:
+            if rule["merchant"].upper() == merchant.upper():
+                existing_rule = rule
+                break
+
+        if existing_rule is None:
+            rules.append(
+                {
+                    "merchant": merchant,
+                    "contains": [keyword],
+                }
+            )
+        else:
+            keywords = existing_rule.setdefault(
+                "contains",
+                [],
+            )
+            if keyword not in keywords:
+                keywords.append(keyword)
+            keywords.sort()
+
+        # Sort alphabetically by merchant
+        rules = sorted(
+            rules,
+            key=lambda r: r["merchant"].upper(),
+        )
+
+        config["rules"] = rules
+
+        # Save back
+        with open(
+                file,
+                "w",
+                encoding="utf-8",
+        ) as f:
+            yaml.safe_dump(
+                config,
+                f,
+                sort_keys=False,
+                allow_unicode=True,
+            )

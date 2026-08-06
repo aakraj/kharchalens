@@ -5,6 +5,7 @@ from datetime import date
 from decimal import Decimal
 
 from .enums import TransactionType
+from .transaction_kind import TransactionKind
 
 
 @dataclass(slots=True)
@@ -22,3 +23,4 @@ class Transaction:
     merchant: str | None = None
     category: str | None = None
     subcategory: str | None = None
+    kind: TransactionKind = TransactionKind.UNKNOWN

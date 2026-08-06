@@ -16,7 +16,9 @@ dependencies = [
     "openpyxl>=3.1.5",
     "xlrd>=2.0.1",
     "pyyaml>=6.0.2",
-    "rapidfuzz>=3.14.0"
+    "rapidfuzz>=3.14.0",
+    "pdfplumber>=0.11.10",
+    "cryptography==42.0.8",
 ]
 
 [dependency-groups]

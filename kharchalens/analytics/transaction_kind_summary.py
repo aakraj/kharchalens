@@ -4,15 +4,15 @@ from collections import defaultdict
 from decimal import Decimal
 
 from kharchalens.models import Transaction
+from kharchalens.models import TransactionKind
 from kharchalens.models import TransactionType
 
 
-def top_unknown_merchants(
+def spending_by_transaction_kind(
         transactions: list[Transaction],
-        limit: int = 20,
-) -> list[tuple[str, Decimal]]:
+) -> dict[TransactionKind, Decimal]:
 
-    totals: dict[str, Decimal] = defaultdict(
+    summary: dict[TransactionKind, Decimal] = defaultdict(
         lambda: Decimal("0")
     )
 
@@ -21,13 +21,6 @@ def top_unknown_merchants(
         if transaction.transaction_type != TransactionType.DEBIT:
             continue
 
-        if transaction.merchant != "Unknown":
-            continuex
+        summary[transaction.kind] += transaction.amount
 
-        totals[transaction.narration] += transaction.amount
-
-    return sorted(
-        totals.items(),
-        key=lambda item: item[1],
-        reverse=True,
-    )[:limit]
+    return dict(summary)

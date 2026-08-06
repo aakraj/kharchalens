@@ -1,68 +1,100 @@
 rules:
-  - merchant: Zomato
-    contains:
-      - ZOMATO
-
-  - merchant: Swiggy
-    contains:
-      - SWIGGY
-
-  - merchant: Amazon
-    contains:
-      - AMAZON
-
-  - merchant: Flipkart
-    contains:
-      - FLIPKART
-
-  - merchant: Blinkit
-    contains:
-      - BLINKIT
-
-  - merchant: BigBasket
-    contains:
-      - BIGBASKET
-
-  - merchant: DMart
-    contains:
-      - DMART
-
-  - merchant: Uber
-    contains:
-      - UBER
-
-  - merchant: Ola
-    contains:
-      - OLA
-
-  - merchant: IRCTC
-    contains:
-      - IRCTC
-
-  - merchant: MakeMyTrip
-    contains:
-      - MAKEMYTRIP
-
-  - merchant: Jio
-    contains:
-      - JIO CENTRE
-
-  - merchant: ACKO Insurance
-    contains:
-      - ACKO
-
-  - merchant: Max Life
-    contains:
-      - MAX LIFE
-
-  - merchant: BBMP
-    contains:
-      - BBMP
-
-  - merchant: Biryani Zone
-    contains:
-      - X3BIRIYANI
-
-  - merchant: Nexa Car Service
-    contains:
-      - BIMAL AUTO
+- merchant: ACKO Insurance
+  contains:
+  - ACKO
+- merchant: Amazon
+  contains:
+  - AMAZON
+- merchant: BBMP
+  contains:
+  - BBMP
+- merchant: BigBasket
+  contains:
+  - BIGBASKET
+- merchant: Blinkit
+  contains:
+  - BLINKIT
+- merchant: Car Fuel
+  contains:
+  - FUEL STATION
+- merchant: DMart
+  contains:
+  - DMART
+- merchant: Firstcry
+  contains:
+  - FIRSTCRY
+- merchant: Flipkart
+  contains:
+  - FLIPKART
+- merchant: Govt. Scheme (PPF, SSY, ...)
+  contains:
+  - SSY
+  - PPF
+- merchant: Hyper Market
+  contains:
+  - HYPER MART
+  - HYPERMARKET
+  - MARKET
+- merchant: Income tax
+  contains:
+  - ITR
+- merchant: IRCTC
+  contains:
+  - IRCTC
+- merchant: Jewellery
+  contains:
+  - JEWE
+  - JEWEL
+  - JEWELLERY
+- merchant: Jio
+  contains:
+  - JIO
+- merchant: MakeMyTrip
+  contains:
+  - MAKEMYTRIP
+- merchant: Max Life
+  contains:
+  - MAX LIFE
+- merchant: Mutual Funds
+  contains:
+  - BILLDKINDIANCLEARING
+- merchant: Myntra
+  contains:
+  - MYNTRA
+- merchant: Nexa Car Service
+  contains:
+  - BIMAL AUTO
+- merchant: Ola
+  contains:
+  - OLA
+- merchant: School Fees
+  contains:
+  - ADMISSION
+  - SCHOOL
+  - ACADEMY
+- merchant: Stocks
+  contains:
+  - ZERODHA
+  - UPSTOX
+- merchant: Swiggy
+  contains:
+  - SWIGGY
+- merchant: Uber
+  contains:
+  - UBER
+- merchant: Vacation
+  contains:
+  - HOLIDAY
+  - TRIP
+- merchant: Zomato
+  contains:
+  - ZOMATO
+- merchant: Amazon Wallet
+  contains:
+  - AMAZON PAY BALANCE
+- merchant: Urban Company
+  contains:
+  - URBAN COMPANY
+- merchant: Apple Subscriptions (Youtube, iCloud, ...)
+  contains:
+  - APPLE MEDIA

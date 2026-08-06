@@ -19,6 +19,7 @@ htmlcov/
 
 # Local user data
 user_data/
+local_data/
 
 # Logs
 *.log

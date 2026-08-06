@@ -5,6 +5,22 @@ from decimal import Decimal
 
 from kharchalens.models import Transaction, TransactionType
 
+def _display_name(transaction: Transaction) -> str:
+    """
+    Name shown in the Top Merchants chart.
+
+    Recognized merchants keep their resolved name.
+
+    Unknown merchants are shown using their original narration so that
+    high-value expenses are never hidden behind a single 'Unknown' bar.
+    """
+
+    if (transaction.merchant
+            and transaction.merchant != "Unknown"):
+        return transaction.merchant
+
+    return "🟡 Needs Review"
+
 
 def top_merchants(
         transactions: list[Transaction],
@@ -12,6 +28,9 @@ def top_merchants(
 ) -> list[tuple[str, Decimal]]:
     """
     Returns merchants ranked by debit spending.
+
+    Unknown merchants are grouped using their narration so they appear
+    individually instead of as one large 'Unknown' bucket.
     """
 
     totals: dict[str, Decimal] = defaultdict(
@@ -23,16 +42,11 @@ def top_merchants(
         if transaction.transaction_type != TransactionType.DEBIT:
             continue
 
-        if not transaction.merchant:
-            continue
+        merchant = _display_name(transaction)
 
-        if transaction.merchant == "Unknown":
-            continue
+        totals[merchant] += transaction.amount
 
-        totals[transaction.merchant] += transaction.amount
-
-    return sorted(
-        totals.items(),
-        key=lambda item: item[1],
-        reverse=True,
-    )[:limit]
+    sorted_merchants = sorted(totals.items(), key=lambda item: item[1], reverse=True)
+    if limit is None:
+        return sorted_merchants
+    return sorted_merchants[:limit]

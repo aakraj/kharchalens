@@ -9,9 +9,52 @@ import streamlit as st
 
 from kharchalens.analytics import top_merchants
 from kharchalens.models import Transaction, TransactionType
+from kharchalens.dashboard.summary import format_inr
+from kharchalens.dashboard.theme import ACCENT, MONEY_FONT, TEAL, YELLOW
+
+_LAYOUT = dict(
+    font=dict(family=MONEY_FONT, color="#1F2937"),
+    hoverlabel=dict(bgcolor="white", font_color="#1F2937"),
+    margin=dict(l=20, r=20, t=30, b=20),
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+    bargap=0.35,
+)
+
+_NEEDS_REVIEW = "🟡 Needs Review"
+
+_LIGHT_BLUE = "#93C5FD"
+_DEEP_BLUE = "#2563EB"
+
+
+def _lerp_hex(left: str, right: str, t: float) -> str:
+    """Linear blend between two hex colours, t in [0, 1]."""
+    a = [int(left[i : i + 2], 16) for i in (1, 3, 5)]
+    b = [int(right[i : i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(
+        f"{round(a[i] + (b[i] - a[i]) * t):02X}" for i in range(3)
+    )
+
+
+def bar_colors(values: list[float]) -> list[str]:
+    """Blue gradient by size (light→deep), with the top bars in teal."""
+    if not values:
+        return []
+    distinct = sorted(set(values))
+    threshold = distinct[-2] if len(distinct) >= 2 else distinct[0]
+    pool = [v for v in values if v < threshold] or values
+    vmin, vmax = min(pool), max(pool)
+    span = (vmax - vmin) or 1.0
+    return [
+        TEAL
+        if value >= threshold
+        else _lerp_hex(_LIGHT_BLUE, _DEEP_BLUE, (value - vmin) / span)
+        for value in values
+    ]
 
 
 def render_monthly_spending(transactions: list[Transaction]) -> None:
+    st.subheader("📅 Monthly Spending Trend")
     monthly_totals: dict[str, Decimal] = defaultdict(lambda: Decimal("0"))
 
     for transaction in transactions:
@@ -29,6 +72,10 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
             {
                 "Month": list(monthly_totals.keys()),
                 "Spent": [float(v) for v in monthly_totals.values()],
+                "Label": [
+                    format_inr(v)
+                    for v in monthly_totals.values()
+                ],
             }
         )
         .sort_values("Month")
@@ -38,18 +85,26 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
         df,
         x="Month",
         y="Spent",
-        text="Spent",
-        title="Monthly Spending",
+        text="Label",
+        color_discrete_sequence=[ACCENT],
     )
 
-    fig.update_traces(texttemplate="₹%{y:,.0f}")
+    values = [float(v) for v in df["Spent"]]
+    fig.update_traces(
+        texttemplate="%{text}",
+        marker_line_width=0,
+        marker_cornerradius=6,
+        marker_color=bar_colors(values),
+    )
+    fig.update_traces(
+        hovertemplate="%{y}<br>%{text}<extra></extra>"
+    )
+    fig.update_layout(**_LAYOUT)
+    st.plotly_chart(fig, width="stretch")
 
-    st.plotly_chart(fig, use_container_width=True)
 
-
-def render_top_merchants(transactions: list[Transaction]) -> None:
-
-    merchants = top_merchants(transactions)
+def render_top_merchants(transactions: list[Transaction], limit: Optional[int] = None) -> None:
+    merchants = top_merchants(transactions,limit=limit)
 
     if not merchants:
         return
@@ -58,6 +113,10 @@ def render_top_merchants(transactions: list[Transaction]) -> None:
         {
             "Merchant": [m for m, _ in merchants],
             "Amount": [float(a) for _, a in merchants],
+            "Label": [
+                format_inr(a)
+                for _, a in merchants
+            ],
         }
     )
 
@@ -66,15 +125,28 @@ def render_top_merchants(transactions: list[Transaction]) -> None:
         x="Amount",
         y="Merchant",
         orientation="h",
-        text="Amount",
-        title="Top Merchants",
+        text="Label",
+        color_discrete_sequence=[ACCENT],
     )
 
-    fig.update_traces(texttemplate="₹%{x:,.0f}")
+    colors = bar_colors([float(a) for _, a in merchants])
+    for i, merchant in enumerate(df["Merchant"]):
+        if merchant == _NEEDS_REVIEW:
+            colors[i] = YELLOW
 
+    fig.update_traces(
+        texttemplate="%{text}",
+        textposition="auto",
+        cliponaxis=False,
+        marker_line_width=0,
+        marker_cornerradius=6,
+        marker_color=colors,
+    )
+    fig.update_traces(hovertemplate="%{y}<br>%{text}<extra></extra>")
     fig.update_layout(
         yaxis=dict(categoryorder="total ascending"),
-        height=450,
+        height=max(450, len(df) * 35),
     )
+    fig.update_layout(**_LAYOUT)
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
