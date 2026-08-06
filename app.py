@@ -18,7 +18,6 @@ from kharchalens.dashboard import (
 
 from kharchalens.analytics import (
     merchant_coverage,
-    top_unknown_merchants,
     unknown_spending
 )
 from decimal import Decimal

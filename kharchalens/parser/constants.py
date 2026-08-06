@@ -1,7 +1,0 @@
-DATE = "Date"
-NARRATION = "Narration"
-REFERENCE = "Chq./Ref.No."
-VALUE_DATE = "Value Dt"
-WITHDRAWAL = "Withdrawal Amt."
-DEPOSIT = "Deposit Amt."
-BALANCE = "Closing Balance"

@@ -12,6 +12,7 @@ from .merchant_table import render_merchant_summary
 __all__ = [
     "build_summary",
     "apply_theme",
+    "render_footer",
     "render_monthly_spending",
     "render_top_merchants",
     "render_highlights",

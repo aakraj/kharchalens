@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import yaml
 
 from kharchalens.merchant.rule_store import MerchantRuleStore
