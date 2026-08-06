@@ -156,6 +156,75 @@ def apply_theme() -> None:
             word-break: break-word;
         }}
 
+        .hl-card {{
+            background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(31, 41, 55, 0.08);
+            border-radius: 16px;
+            padding: 1.05rem 1.15rem 1.15rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(31, 41, 55, 0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: 132px;
+            height: 100%;
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
+        }}
+        .hl-card:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(31, 41, 55, 0.14);
+        }}
+        .hl-card::before {{
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--hl-accent);
+        }}
+        .hl-top {{
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }}
+        .hl-ico {{
+            width: 38px; height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            background: var(--hl-accent-soft);
+            flex: none;
+        }}
+        .hl-label {{
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            line-height: 1.2;
+        }}
+        .hl-value {{
+            font-family: {MONEY_FONT};
+            font-size: 1.28rem;
+            font-weight: 750;
+            color: #111827;
+            margin-top: 0.55rem;
+            word-break: break-word;
+        }}
+        .hl-bar {{
+            margin-top: auto;
+            height: 6px;
+            border-radius: 99px;
+            background: rgba(31, 41, 55, 0.08);
+            overflow: hidden;
+        }}
+        .hl-bar > div {{
+            height: 100%;
+            border-radius: 99px;
+            background: var(--hl-accent);
+        }}
+
         .app-footer {{
             margin-top: 4rem;
             padding: 2.2rem 1rem 1.4rem;
