@@ -13,7 +13,7 @@ _NEEDS_REVIEW = "🟡 Needs Review"
 
 def render_merchant_summary(
         transactions: list[Transaction],
-        limit: Optional[int] = None
+        limit: int | None = None
 ) -> None:
 
     rows = merchant_summary(transactions, limit=limit)

@@ -8,7 +8,7 @@ class NarrationPreprocessor:
     Removes bank-specific noise from normalized narrations.
     """
 
-    _TRANSACTION_WORDS = {
+    _TRANSACTION_WORDS = frozenset({
         "POS",
         "UPI",
         "IMPS",
@@ -19,7 +19,7 @@ class NarrationPreprocessor:
         "DR",
         "CR",
         "NETBANK",
-    }
+    })
 
     _NUMBER_PATTERN = re.compile(r"\b\d+\b")
     _CARD_PATTERN = re.compile(r"\b\d+X+\d+\b", re.IGNORECASE)

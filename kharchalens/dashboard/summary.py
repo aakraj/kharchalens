@@ -25,9 +25,9 @@ def format_inr(amount: Decimal) -> str:
     return f"₹{value:,.0f}"
 
 
-def build_summary(transactions: list[Transaction]) -> dict:
-    total_debit = Decimal("0")
-    total_credit = Decimal("0")
+def build_summary(transactions: list[Transaction]) -> dict[str, Decimal | int]:
+    total_debit = Decimal(0)
+    total_credit = Decimal(0)
 
     for transaction in transactions:
         if transaction.transaction_type == TransactionType.DEBIT:

@@ -16,7 +16,7 @@ def test_spending_by_transaction_kind():
         Transaction(
             date=date.today(),
             narration="Amazon",
-            amount=Decimal("100"),
+            amount=Decimal(100),
             transaction_type=TransactionType.DEBIT,
             kind=TransactionKind.PURCHASE,
         ),
@@ -24,7 +24,7 @@ def test_spending_by_transaction_kind():
         Transaction(
             date=date.today(),
             narration="PPF",
-            amount=Decimal("200"),
+            amount=Decimal(200),
             transaction_type=TransactionType.DEBIT,
             kind=TransactionKind.INVESTMENT,
         ),
@@ -32,7 +32,7 @@ def test_spending_by_transaction_kind():
         Transaction(
             date=date.today(),
             narration="ATM",
-            amount=Decimal("50"),
+            amount=Decimal(50),
             transaction_type=TransactionType.DEBIT,
             kind=TransactionKind.CASH_WITHDRAWAL,
         ),
@@ -42,6 +42,6 @@ def test_spending_by_transaction_kind():
         transactions
     )
 
-    assert summary[TransactionKind.PURCHASE] == Decimal("100")
-    assert summary[TransactionKind.INVESTMENT] == Decimal("200")
-    assert summary[TransactionKind.CASH_WITHDRAWAL] == Decimal("50")
+    assert summary[TransactionKind.PURCHASE] == Decimal(100)
+    assert summary[TransactionKind.INVESTMENT] == Decimal(200)
+    assert summary[TransactionKind.CASH_WITHDRAWAL] == Decimal(50)

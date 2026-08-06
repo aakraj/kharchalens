@@ -14,7 +14,7 @@ def classify(text: str) -> Transaction:
     transaction = Transaction(
         date=date.today(),
         narration=text,
-        amount=Decimal("100"),
+        amount=Decimal(100),
         transaction_type=TransactionType.DEBIT,
     )
 

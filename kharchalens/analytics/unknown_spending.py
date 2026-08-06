@@ -36,7 +36,7 @@ def unknown_spending(
             grouped[transaction.narration] = UnknownMerchantSpend(
                 narration=transaction.narration,
                 transactions=0,
-                total_spend=Decimal("0"),
+                total_spend=Decimal(0),
             )
 
         item = grouped[transaction.narration]

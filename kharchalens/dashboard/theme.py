@@ -261,7 +261,7 @@ def apply_theme() -> None:
 
 def render_footer() -> None:
     st.markdown(
-        f"""
+        """
         <div class="app-footer">
             <div class="footer-links">
                 <a href="https://github.com" target="_blank">GitHub</a>

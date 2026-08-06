@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
+from typing import Any, cast
 
 import pandas as pd
 
@@ -38,13 +39,14 @@ class HdfcStatementParser(StatementParser):
 
         for date_format in supported_formats:
             try:
-                return datetime.strptime(value, date_format).date()
+                # Bank-statement dates are naive calendar dates; no tz applies.
+                return datetime.strptime(value, date_format).date()  # noqa: DTZ007
             except ValueError:
                 continue
 
         try:
-            parsed = pd.to_datetime(value, dayfirst=True, errors="raise")
-            return parsed.date()
+            parsed: Any = pd.to_datetime(value, dayfirst=True, errors="raise")
+            return cast(date, parsed.date())
         except (ValueError, TypeError):
             return None
 
@@ -76,10 +78,10 @@ class HdfcStatementParser(StatementParser):
         withdrawal = self._parse_amount(row.get("Withdrawal Amt."))
         deposit = self._parse_amount(row.get("Deposit Amt."))
 
-        if withdrawal is not None and withdrawal != Decimal("0"):
+        if withdrawal is not None and withdrawal != Decimal(0):
             amount = withdrawal
             transaction_type = TransactionType.DEBIT
-        elif deposit is not None and deposit != Decimal("0"):
+        elif deposit is not None and deposit != Decimal(0):
             amount = deposit
             transaction_type = TransactionType.CREDIT
         else:

@@ -12,7 +12,7 @@ def test_unknown_spending():
         Transaction(
             date=date.today(),
             narration="SHOP A",
-            amount=Decimal("100"),
+            amount=Decimal(100),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -20,7 +20,7 @@ def test_unknown_spending():
         Transaction(
             date=date.today(),
             narration="SHOP A",
-            amount=Decimal("300"),
+            amount=Decimal(300),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -28,7 +28,7 @@ def test_unknown_spending():
         Transaction(
             date=date.today(),
             narration="SHOP B",
-            amount=Decimal("250"),
+            amount=Decimal(250),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -36,7 +36,7 @@ def test_unknown_spending():
         Transaction(
             date=date.today(),
             narration="AMAZON",
-            amount=Decimal("500"),
+            amount=Decimal(500),
             transaction_type=TransactionType.DEBIT,
             merchant="Amazon",
         ),
@@ -48,6 +48,6 @@ def test_unknown_spending():
 
     assert result[0].narration == "SHOP A"
     assert result[0].transactions == 2
-    assert result[0].total_spend == Decimal("400")
+    assert result[0].total_spend == Decimal(400)
 
     assert result[1].narration == "SHOP B"

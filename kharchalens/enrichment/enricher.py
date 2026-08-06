@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from kharchalens.classifier import TransactionClassifier
 from kharchalens.merchant import MerchantResolver
 from kharchalens.models import Transaction
-from kharchalens.classifier import TransactionClassifier
 
 
 class TransactionEnricher:

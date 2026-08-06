@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 
-from kharchalens.models import Transaction
-from kharchalens.models import TransactionType
+from kharchalens.models import Transaction, TransactionType
 
 
 def top_unknown_merchants(

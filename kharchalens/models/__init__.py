@@ -4,6 +4,6 @@ from .transaction_kind import TransactionKind
 
 __all__ = [
     "Transaction",
-    "TransactionType",
     "TransactionKind",
+    "TransactionType",
 ]

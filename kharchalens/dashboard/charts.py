@@ -8,18 +8,18 @@ import plotly.express as px
 import streamlit as st
 
 from kharchalens.analytics import top_merchants
-from kharchalens.models import Transaction, TransactionType
 from kharchalens.dashboard.summary import format_inr
 from kharchalens.dashboard.theme import ACCENT, MONEY_FONT, TEAL, YELLOW
+from kharchalens.models import Transaction, TransactionType
 
-_LAYOUT = dict(
-    font=dict(family=MONEY_FONT, color="#1F2937"),
-    hoverlabel=dict(bgcolor="white", font_color="#1F2937"),
-    margin=dict(l=20, r=20, t=30, b=20),
-    plot_bgcolor="rgba(0,0,0,0)",
-    paper_bgcolor="rgba(0,0,0,0)",
-    bargap=0.35,
-)
+_LAYOUT = {
+    "font": {"family": MONEY_FONT, "color": "#1F2937"},
+    "hoverlabel": {"bgcolor": "white", "font_color": "#1F2937"},
+    "margin": {"l": 20, "r": 20, "t": 30, "b": 20},
+    "plot_bgcolor": "rgba(0,0,0,0)",
+    "paper_bgcolor": "rgba(0,0,0,0)",
+    "bargap": 0.35,
+}
 
 _NEEDS_REVIEW = "🟡 Needs Review"
 
@@ -55,7 +55,7 @@ def bar_colors(values: list[float]) -> list[str]:
 
 def render_monthly_spending(transactions: list[Transaction]) -> None:
     st.subheader("📅 Monthly Spending Trend")
-    monthly_totals: dict[str, Decimal] = defaultdict(lambda: Decimal("0"))
+    monthly_totals: dict[str, Decimal] = defaultdict(lambda: Decimal(0))
 
     for transaction in transactions:
         if transaction.transaction_type != TransactionType.DEBIT:
@@ -103,7 +103,7 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
     st.plotly_chart(fig, width="stretch")
 
 
-def render_top_merchants(transactions: list[Transaction], limit: Optional[int] = None) -> None:
+def render_top_merchants(transactions: list[Transaction], limit: int | None = None) -> None:
     merchants = top_merchants(transactions,limit=limit)
 
     if not merchants:
@@ -144,7 +144,7 @@ def render_top_merchants(transactions: list[Transaction], limit: Optional[int] =
     )
     fig.update_traces(hovertemplate="%{y}<br>%{text}<extra></extra>")
     fig.update_layout(
-        yaxis=dict(categoryorder="total ascending"),
+        yaxis={"categoryorder": "total ascending"},
         height=max(450, len(df) * 35),
     )
     fig.update_layout(**_LAYOUT)

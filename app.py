@@ -1,35 +1,31 @@
 import tempfile
+from decimal import Decimal
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
+from kharchalens.analytics import merchant_coverage, unknown_spending
+from kharchalens.dashboard import (
+    apply_theme,
+    build_summary,
+    render_category_spending,
+    render_footer,
+    render_highlights,
+    render_merchant_summary,
+    render_monthly_spending,
+    render_top_merchants,
+)
+from kharchalens.dashboard.summary import format_inr
+from kharchalens.enrichment import TransactionEnricher
+from kharchalens.merchant.rule_store import MerchantRuleStore
 from kharchalens.parser import (
     HdfcParser,
     HdfcPdfParser,
     PdfIncorrectPassword,
     PdfPasswordRequired,
 )
-from kharchalens.dashboard import (
-    build_summary,
-    render_monthly_spending,
-    render_top_merchants,
-)
-
-from kharchalens.analytics import (
-    merchant_coverage,
-    unknown_spending
-)
-from decimal import Decimal
-from kharchalens.dashboard.summary import format_inr
-from kharchalens.enrichment import TransactionEnricher
-from kharchalens.merchant.rule_store import MerchantRuleStore
 from kharchalens.utils.date_utils import format_date
-from kharchalens.dashboard import apply_theme
-from kharchalens.dashboard import render_footer
-from kharchalens.dashboard import render_highlights
-from kharchalens.dashboard import render_category_spending
-from kharchalens.dashboard import render_merchant_summary
 
 st.set_page_config(page_title="KharchaLens", page_icon="💰", layout="wide")
 apply_theme()
@@ -147,10 +143,10 @@ if uploaded:
             col2.metric("💸 Total Debit", format_inr(total_debit))
             col3.metric("📈 Saved", format_inr(summary["net_cash_flow"]))
 
-            if total_credit > Decimal("0"):
-                savings_rate = ((total_credit - total_debit)/ total_credit) * Decimal("100")
+            if total_credit > Decimal(0):
+                savings_rate = ((total_credit - total_debit)/ total_credit) * Decimal(100)
             else:
-                savings_rate = Decimal("0")
+                savings_rate = Decimal(0)
             col4.metric("📊 Savings Rate",f"{savings_rate:.1f}%")
 
             #==========================================
@@ -259,5 +255,5 @@ if uploaded:
         )
     except PdfIncorrectPassword:
         st.error("🔒 The password is incorrect. Please try again.")
-    except Exception as ex:
+    except Exception as ex:  # noqa: BLE001 - surface any error in the UI
         st.exception(ex)

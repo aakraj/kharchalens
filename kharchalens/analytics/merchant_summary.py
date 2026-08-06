@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from decimal import Decimal
+from typing import TypedDict
 
 from kharchalens.models import (
     Transaction,
@@ -9,12 +10,19 @@ from kharchalens.models import (
 )
 
 
+class MerchantSummaryRow(TypedDict):
+    Merchant: str
+    Spend: Decimal
+    Transactions: int
+    Average: Decimal
+
+
 def merchant_summary(
         transactions: list[Transaction],
-        limit: int = 10,
-):
-    totals = defaultdict(lambda: Decimal("0"))
-    counts = defaultdict(int)
+        limit: int | None = 10,
+) -> list[MerchantSummaryRow]:
+    totals: dict[str, Decimal] = defaultdict(lambda: Decimal(0))
+    counts: dict[str, int] = defaultdict(int)
 
     for transaction in transactions:
 
@@ -28,14 +36,14 @@ def merchant_summary(
         totals[merchant] += transaction.amount
         counts[merchant] += 1
 
-    rows = []
-    for merchant in totals:
+    rows: list[MerchantSummaryRow] = []
+    for merchant, total in totals.items():
         rows.append(
             {
                 "Merchant": merchant,
-                "Spend": totals[merchant],
+                "Spend": total,
                 "Transactions": counts[merchant],
-                "Average": totals[merchant] / counts[merchant],
+                "Average": total / counts[merchant],
             }
         )
 

@@ -12,7 +12,7 @@ def test_merchant_coverage():
         Transaction(
             date=date.today(),
             narration="",
-            amount=Decimal("100"),
+            amount=Decimal(100),
             transaction_type=TransactionType.DEBIT,
             merchant="Amazon",
         ),
@@ -20,7 +20,7 @@ def test_merchant_coverage():
         Transaction(
             date=date.today(),
             narration="",
-            amount=Decimal("100"),
+            amount=Decimal(100),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -28,7 +28,7 @@ def test_merchant_coverage():
         Transaction(
             date=date.today(),
             narration="",
-            amount=Decimal("100"),
+            amount=Decimal(100),
             transaction_type=TransactionType.DEBIT,
             merchant=None,
         ),

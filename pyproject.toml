@@ -40,9 +40,13 @@ packages = ["kharchalens"]
 line-length = 100
 target-version = "py314"
 
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["DTZ011"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.mypy]
 python_version = "3.14"
 strict = true
+ignore_missing_imports = true

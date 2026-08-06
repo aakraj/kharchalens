@@ -11,9 +11,9 @@ from .rules import MerchantRule
 
 class MerchantResolver:
 
-    def __init__(self):
+    def __init__(self) -> None:
 
-        self.rules = []
+        self.rules: list[MerchantRule] = []
 
         self._load_rules(
             Path(__file__).parent.parent
@@ -27,7 +27,7 @@ class MerchantResolver:
             / "merchants.local.yml"
         )
 
-    def _load_rules(self, path: Path):
+    def _load_rules(self, path: Path) -> None:
 
         if not path.exists():
             return

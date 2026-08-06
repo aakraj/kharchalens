@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from kharchalens.models import Transaction
-from kharchalens.models import TransactionKind
+from kharchalens.models import Transaction, TransactionKind
 
 
 class TransactionClassifier:

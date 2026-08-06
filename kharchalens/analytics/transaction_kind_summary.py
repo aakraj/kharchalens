@@ -3,9 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from decimal import Decimal
 
-from kharchalens.models import Transaction
-from kharchalens.models import TransactionKind
-from kharchalens.models import TransactionType
+from kharchalens.models import Transaction, TransactionKind, TransactionType
 
 
 def spending_by_transaction_kind(
@@ -13,7 +11,7 @@ def spending_by_transaction_kind(
 ) -> dict[TransactionKind, Decimal]:
 
     summary: dict[TransactionKind, Decimal] = defaultdict(
-        lambda: Decimal("0")
+        lambda: Decimal(0)
     )
 
     for transaction in transactions:

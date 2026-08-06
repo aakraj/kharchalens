@@ -10,13 +10,13 @@ from .hdfc_base import HdfcStatementParser
 
 
 class HdfcParser(HdfcStatementParser):
-    REQUIRED_COLUMNS = {
+    REQUIRED_COLUMNS = frozenset({
         "Date",
         "Narration",
         "Chq./Ref.No.",
         "Withdrawal Amt.",
         "Deposit Amt.",
-    }
+    })
 
     def parse(self, file_path: str) -> list[Transaction]:
         raw_df = self._read_statement(file_path)

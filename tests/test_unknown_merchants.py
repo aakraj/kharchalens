@@ -12,7 +12,7 @@ def test_top_unknown_merchants():
         Transaction(
             date=date.today(),
             narration="ABC",
-            amount=Decimal("10"),
+            amount=Decimal(10),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -20,7 +20,7 @@ def test_top_unknown_merchants():
         Transaction(
             date=date.today(),
             narration="ABC",
-            amount=Decimal("20"),
+            amount=Decimal(20),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -28,7 +28,7 @@ def test_top_unknown_merchants():
         Transaction(
             date=date.today(),
             narration="XYZ",
-            amount=Decimal("20"),
+            amount=Decimal(20),
             transaction_type=TransactionType.DEBIT,
             merchant="Unknown",
         ),
@@ -36,7 +36,7 @@ def test_top_unknown_merchants():
         Transaction(
             date=date.today(),
             narration="AMAZON",
-            amount=Decimal("30"),
+            amount=Decimal(30),
             transaction_type=TransactionType.DEBIT,
             merchant="Amazon",
         ),

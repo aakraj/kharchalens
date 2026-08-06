@@ -61,11 +61,11 @@ def render_category_spending(
     )
 
     fig.update_layout(
-        yaxis=dict(categoryorder="total ascending"),
+        yaxis={"categoryorder": "total ascending"},
         height=350,
-        font=dict(family=MONEY_FONT, color="#1F2937"),
-        hoverlabel=dict(bgcolor="white", font_color="#1F2937"),
-        margin=dict(l=20, r=20, t=40, b=20),
+        font={"family": MONEY_FONT, "color": "#1F2937"},
+        hoverlabel={"bgcolor": "white", "font_color": "#1F2937"},
+        margin={"l": 20, "r": 20, "t": 40, "b": 20},
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         bargap=0.35,

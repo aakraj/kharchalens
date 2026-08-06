@@ -14,16 +14,16 @@ from kharchalens.models import Transaction
 
 def render_highlights(
         transactions: list[Transaction],
-        summary: dict,
+        summary: dict[str, Decimal],
 ) -> None:
     st.subheader("💡 Highlights")
 
-    savings_rate = Decimal("0")
+    savings_rate = Decimal(0)
 
     if summary["total_credit"] > 0:
         savings_rate = (
             summary["net_cash_flow"] / summary["total_credit"]
-        ) * Decimal("100")
+        ) * Decimal(100)
 
     merchants = top_merchants(
         transactions,
