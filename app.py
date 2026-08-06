@@ -92,17 +92,29 @@ if uploaded:
 
     pdf_password = None
     if suffix == ".pdf":
-        pdf_password = st.text_input(
-            "🔒 PDF Password",
-            type="password",
-            key="pdf_password",
-            help=(
-                "Only needed for password-protected statements. This is the "
-                "password HDFC asked you to set when downloading the "
-                "e-statement (often your first-name initial + the last 4 "
-                "digits of your customer ID)."
-            ),
-        ) or None
+        pw_col, eye_col = st.columns([3, 1], gap="small", vertical_alignment="center")
+        with pw_col:
+            pdf_password = st.text_input(
+                "🔒 PDF Password",
+                type="default",
+                key="pdf_password",
+                autocomplete="on",
+                width=260,
+                help=(
+                    "Only needed for password-protected statements. This is the "
+                    "password HDFC asked you to set when downloading the "
+                    "e-statement (often your first-name initial + the last 4 "
+                    "digits of your customer ID)."
+                ),
+            ) or None
+        with eye_col:
+            show_password = st.checkbox("👁 Show", key="show_pdf_password")
+        mask = "none" if show_password else "disc"
+        st.markdown(
+            f'<style>[data-testid="stElementContainer"].st-key-pdf_password input '
+            f'{{ -webkit-text-security: {mask}; }}</style>',
+            unsafe_allow_html=True,
+        )
 
     try:
         if suffix == ".pdf":

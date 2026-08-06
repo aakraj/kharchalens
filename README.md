@@ -78,7 +78,7 @@ uv run streamlit run app.py
 
 > ⚠️ Run from the **repository root** — merchant rules are resolved relative to the current working directory.
 
-Open the URL Streamlit prints (usually `http://localhost:5000`).
+Open the URL Streamlit prints (usually `http://localhost:8501`).
 
 ### Import a statement
 
@@ -110,10 +110,13 @@ Rules are plain YAML. **Recognized** merchants ship with the app in `kharchalens
 ├── app.py                          # Streamlit entrypoint
 ├── kharchalens/
 │   ├── parser/                     # HDFC .xls/.xlsx/.pdf parsing
-│   ├── merchant/                   # Merchant resolution + rule store
+│   ├── merchant/                   # Normalization, rules, resolver, rule store
 │   ├── classifier/                 # Transaction categorization
+│   ├── enrichment/                 # Enriches parsed rows into Transactions
 │   ├── analytics/                  # Aggregations, coverage, unknown spending
 │   ├── dashboard/                  # Charts, highlights, theme
+│   ├── models/                     # Transaction, kind and type enums
+│   ├── utils/                      # Shared date helpers
 │   └── config/merchants.yml        # Built-in public merchant rules
 ├── local_data/merchants.local.yml  # Your personal rules (gitignored)
 └── tests/
