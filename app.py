@@ -231,10 +231,36 @@ if uploaded:
                     for t in transactions
                 ]
             )
+            search_col, type_col, merchant_col = st.columns([3, 1, 2])
+            query = search_col.text_input(
+                "🔍 Search", key="txn_search", placeholder="Search narration or merchant…"
+            )
+            tx_type = type_col.selectbox(
+                "Type",
+                ["All", "DEBIT", "CREDIT"],
+                key="txn_type_filter",
+            )
+            merchants = sorted(m for m in df["Merchant"].dropna().unique() if m != "Unknown")
+            merchants = ["All"] + merchants
+            merchant_filter = merchant_col.selectbox(
+                "Merchant", merchants, key="txn_merchant_filter"
+            )
+            filtered = df
+            if query:
+                mask = (
+                    df["Narration"].str.contains(query, case=False, na=False)
+                    | df["Merchant"].str.contains(query, case=False, na=False)
+                )
+                filtered = df[mask]
+            if tx_type != "All":
+                filtered = filtered[filtered["Type"] == tx_type]
+            if merchant_filter != "All":
+                filtered = filtered[filtered["Merchant"] == merchant_filter]
+            st.caption(f"{len(filtered)} of {len(df)} transactions")
             st.divider()
             st.subheader("📜 Recent Transactions")
             st.dataframe(
-                df,
+                filtered,
                 width="stretch",
                 height=500,
                 hide_index=True,

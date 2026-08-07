@@ -1,398 +1,181 @@
-# Merchant & matching rules for KharchaLens.
-#
-# Each rule lists `contains` keywords; a narration is matched if any keyword
-# is a substring of the normalized narration (case-insensitive, punctuation
-# and numbers stripped). Rules are evaluated top-to-bottom, FIRST match wins.
-# Keep specific rules before generic ones.
-
 rules:
-# ---- Food & Grocery ----
-- merchant: Zomato
+- merchant: ACKO Insurance
   contains:
-  - ZOMATO
-- merchant: Swiggy
+  - ACKO
+- merchant: ACT Fibernet
   contains:
-  - SWIGGY
-  - DINEOUT
-- merchant: BigBasket
+  - ACTFIBERNET
+  - ACT FIBER
+- merchant: Adidas
   contains:
-  - BIGBASKET
-- merchant: DMart
+  - ADIDAS
+- merchant: Air India
   contains:
-  - DMART
-- merchant: Blinkit
+  - AIR INDIA
+- merchant: Airbnb
   contains:
-  - BLINKIT
-- merchant: Instamart
+  - AIRBNB
+- merchant: Airtel
   contains:
-  - INSTAMART
-- merchant: Zepto
+  - AIRTEL
+- merchant: Airtel Xstream
   contains:
-  - ZEPTO
-- merchant: Licious
+  - XSTREAM
+  - AIRTEL FIBER
+- merchant: Ajio
   contains:
-  - LICIOUS
-- merchant: Reliance Smart/Fresh
+  - AJIO
+- merchant: Akasa Air
   contains:
-  - RELIANCE FRESH
-  - RELIANCE SMART
-  - RELIANCE RETAIL
-  - SMART POINT
-- merchant: Big Bazaar
+  - AKASA
+- merchant: Allen Solly
   contains:
-  - BIGBAZAAR
-- merchant: Spencer's
+  - ALLEN SOLLY
+- merchant: Amazon
   contains:
-  - SPENCER
-  - SPENCERS
-- merchant: More Supermarket
+  - AMAZON
+- merchant: Amazon Pay Later
   contains:
-  - MORE SUPERMARKET
-  - MORE MARKET
-- merchant: Nilgiris
+  - AMAZON PAY LATER
+- merchant: Amazon Prime Video
   contains:
-  - NILGIRIS
-- merchant: Ratnadeep
+  - PRIME VIDEO
+  - AMZNPRIME
+- merchant: Amazon Wallet
   contains:
-  - RATNADEEP
-- merchant: Hypermarket
+  - AMAZON PAY BALANCE
+- merchant: Amex
   contains:
-  - HYPERMARKET
-  - HYPER MART
-  - SUPER MARKET
-  - MEGA MART
-# ---- Restaurant chains ----
-- merchant: Domino's
+  - AMERICAN EXPRESS
+  - AMEX
+- merchant: Apollo
   contains:
-  - DOMINOS
-- merchant: McDonald's
+  - APOLLO
+- merchant: Apollo Pharmacy
   contains:
-  - MCDONALD
-- merchant: KFC
+  - APOLLO PHARMACY
+- merchant: Apple
   contains:
-  - KFC
-- merchant: Pizza Hut
+  - APPLE
+- merchant: Apple Store
   contains:
-  - PIZZA HUT
-- merchant: Subway
+  - APPLE STORE
+- merchant: Axis Card
   contains:
-  - SUBWAY
-- merchant: Starbucks
+  - AXIS CARD
+- merchant: Bajaj Allianz
   contains:
-  - STARBUCKS
-- merchant: Cafe Coffee Day
+  - BAJAJ ALLIANZ
+- merchant: Bajaj Finserv Loan
   contains:
-  - CAFE COFFEE DAY
-  - CCD
-- merchant: Burger King
-  contains:
-  - BURGER KING
-- merchant: Wow! Momo
-  contains:
-  - WOW MOMO
-  - WOW MOMOS
-- merchant: Faasos
-  contains:
-  - FAASOS
-  - BEHROUZ
-  - OWLE
+  - BAJAJ FINSERV
+  - BAJAJ FINANCE
+  - BAJAJ HOUSING
 - merchant: Barbeque Nation
   contains:
   - BARBEQUE
-- merchant: Haldiram's
+- merchant: Bata
   contains:
-  - HALDIRAM
+  - BATA
+- merchant: BBMP / Property Tax
+  contains:
+  - BBMP
+- merchant: Big Bazaar
+  contains:
+  - BIGBAZAAR
+- merchant: BigBasket
+  contains:
+  - BIGBASKET
 - merchant: Bikanervala
   contains:
   - BIKANERWALA
   - BIKANERVALA
   - BIKANERI
-- merchant: Box8
+- merchant: BILLDESK
   contains:
-  - BOX8
-- merchant: Restaurant
+  - BILLDESK
+- merchant: Blinkit
   contains:
-    - FOOD
-# ---- E-commerce & Retail ----
-- merchant: Amazon
-  contains:
-  - AMAZON
-- merchant: Amazon Wallet
-  contains:
-  - AMAZON PAY BALANCE
-- merchant: Flipkart
-  contains:
-  - FLIPKART
-  - FKMP
-- merchant: Myntra
-  contains:
-  - MYNTRA
-- merchant: Ajio
-  contains:
-  - AJIO
-- merchant: Nykaa
-  contains:
-  - NYKAA
-- merchant: Meesho
-  contains:
-  - MEESHO
-- merchant: Snapdeal
-  contains:
-  - SNAPDEAL
-- merchant: Tata CLiQ
-  contains:
-  - TATACLIQ
-- merchant: Firstcry
-  contains:
-  - FIRSTCRY
-- merchant: Zudio
-  contains:
-  - ZUDIO
-- merchant: Pantaloons
-  contains:
-  - PANTALOON
-- merchant: Westside
-  contains:
-  - WESTSIDE
-- merchant: Lifestyle
-  contains:
-  - LIFESTYLE
-- merchant: Shoppers Stop
-  contains:
-  - SHOPPERS STOP
-- merchant: Max Fashion
-  contains:
-  - MAX FASHION
-  - TRENDS
-- merchant: Reliance Digital
-  contains:
-  - RELIANCE DIGITAL
-  - RELIANCE
-- merchant: Croma
-  contains:
-  - CROMA
-- merchant: Vijay Sales
-  contains:
-  - VIJAY SALES
-- merchant: IKEA
-  contains:
-  - IKEA
-- merchant: Decathlon
-  contains:
-  - DECATHLON
-- merchant: Apple Store
-  contains:
-  - APPLE STORE
-- merchant: Lenskart
-  contains:
-  - LENSKART
+  - BLINKIT
 - merchant: BoAt
   contains:
   - BOAT
-- merchant: Samsung
+- merchant: BookMyShow
   contains:
-  - SAMSUNG
-- merchant: Xiaomi
+  - BOOKMYSHOW
+- merchant: Box8
   contains:
-  - XIAOMI
-  - MI STORE
-- merchant: OnePlus
+  - BOX8
+- merchant: BSNL
   contains:
-  - ONEPLUS
-- merchant: Puma
+  - BSNL
+- merchant: Burger King
   contains:
-  - PUMA
-- merchant: Nike
+  - BURGER KING
+- merchant: Cafe Coffee Day
   contains:
-  - NIKE
-- merchant: Adidas
+  - CAFE COFFEE DAY
+  - CCD
+- merchant: Car Fuel
   contains:
-  - ADIDAS
-- merchant: Woodland
+  - FUEL STATION
+  - PETROL
+  - HP PETROL
+  - SHELL
+  - IOCL PETROLEUM
+- merchant: Cleartrip
   contains:
-  - WOODLAND
-- merchant: Van Heusen
+  - CLEARTRIP
+- merchant: CRED
   contains:
-  - VAN HEUSEN
-- merchant: Allen Solly
+  - CRED
+- merchant: Credit Card
   contains:
-  - ALLEN SOLLY
-- merchant: Bata
+  - CREDIT CARD
+  - CREDIT
+  - CARD PAYMENT
+  - CARD EMI
+  - VISA
+  - MASTERCARD
+  - RUPAY
+- merchant: Croma
   contains:
-  - BATA
-# ---- Jewellery ----
-- merchant: Jewellery
+  - CROMA
+- merchant: Cult.fit
   contains:
-  - JEWE
-  - JEWEL
-  - JEWELLERY
-- merchant: Tanishq
+  - CULTFIT
+  - CULT FIT
+- merchant: Decathlon
   contains:
-  - TANISHQ
-- merchant: Kalyan Jewellers
+  - DECATHLON
+- merchant: Delhivery
   contains:
-  - KALYAN
-- merchant: PN Gadgil Jewellers
+  - DELHIVERY
+- merchant: Digit Insurance
   contains:
-  - P N GADGIL
-  - PNGUNKNOWN
-- merchant: Titan
+  - DIGIT INSURANCE
+- merchant: Dish TV
   contains:
-  - TITAN
-# ---- Subscription & Media ----
-- merchant: Apple
-  contains:
-  - APPLE
-- merchant: Amazon Prime Video
-  contains:
-  - PRIME VIDEO
-  - AMZNPRIME
-- merchant: Netflix
-  contains:
-  - NETFLIX
+  - DISH TV
 - merchant: Disney+ Hotstar
   contains:
   - HOTSTAR
   - DISNEY
-- merchant: Google Play / YouTube
+- merchant: DMart
   contains:
-  - GOOGLEAD
-  - GOOGLE PLAY
-  - YOUTUBE
-  - GOOGLE ADS
-- merchant: Spotify
+  - DMART
+- merchant: Domino's
   contains:
-  - SPOTIFY
-- merchant: SonyLIV
+  - DOMINOS
+- merchant: DTDC
   contains:
-  - SONY LIV
-- merchant: Zee5
+  - DTDC
+- merchant: Dunzo
   contains:
-  - ZEE5
-- merchant: JioSaavn
-  contains:
-  - JIO SAAVN
-# ---- Travel & Transport ----
-- merchant: IRCTC
-  contains:
-  - IRCTC
-- merchant: IndiGo
-  contains:
-  - INDIGO
-- merchant: Air India
-  contains:
-  - AIR INDIA
-- merchant: Vistara
-  contains:
-  - VISTARA
-- merchant: SpiceJet
-  contains:
-  - SPICEJET
-- merchant: Akasa Air
-  contains:
-  - AKASA
-- merchant: MakeMyTrip
-  contains:
-  - MAKEMYTRIP
-- merchant: Goibibo
-  contains:
-  - GOIBIBO
-- merchant: Yatra
-  contains:
-  - YATRA
-- merchant: Cleartrip
-  contains:
-  - CLEARTRIP
+  - DUNZO
 - merchant: EaseMyTrip
   contains:
   - EASEMYTRIP
-- merchant: redBus
-  contains:
-  - REDBUS
-- merchant: OYO
-  contains:
-  - OYO
-- merchant: Airbnb
-  contains:
-  - AIRBNB
-- merchant: Ola
-  contains:
-  - OLA
-- merchant: Uber
-  contains:
-  - UBER
-- merchant: Rapido
-  contains:
-  - RAPIDO
-- merchant: BookMyShow
-  contains:
-  - BOOKMYSHOW
-- merchant: PVR
-  contains:
-  - PVR
-- merchant: INOX
-  contains:
-  - INOX
-# ---- Payments & Fintech ----
-- merchant: Paytm
-  contains:
-  - PAYTM
-- merchant: PhonePe
-  contains:
-  - PHONEPE
-- merchant: Google Pay
-  contains:
-  - GOOGLE PAY
-  - TEZ
-  - GPAY
-- merchant: Mobikwik
-  contains:
-  - MOBIKWIK
-- merchant: Freecharge
-  contains:
-  - FREECHARGE
-- merchant: Razorpay
-  contains:
-  - RAZORPAY
-- merchant: PolicyBazaar
-  contains:
-  - POLICYBAZAAR
-# ---- Telecom & Broadband ----
-- merchant: Jio
-  contains:
-  - JIO
-- merchant: Vodafone Idea
-  contains:
-  - VODAFONE
-  - IDEA
-- merchant: Airtel
-  contains:
-  - AIRTEL
-- merchant: BSNL
-  contains:
-  - BSNL
-- merchant: Tata Play
-  contains:
-  - TATA PLAY
-  - TATASKY
-- merchant: Dish TV
-  contains:
-  - DISH TV
-- merchant: Hathway
-  contains:
-  - HATHWAY
-- merchant: ACT Fibernet
-  contains:
-  - ACTFIBERNET
-  - ACT FIBER
-- merchant: Airtel Xstream
-  contains:
-  - XSTREAM
-  - AIRTEL FIBER
-# ---- Utilities ----
-- merchant: BBMP / Property Tax
-  contains:
-  - BBMP
 - merchant: Electricity Bill
   contains:
   - BESCOM
@@ -406,6 +189,32 @@ rules:
   - ADANI ELECTRICITY
   - ELECTRICITY
   - POWER BILL
+- merchant: Faasos
+  contains:
+  - FAASOS
+  - BEHROUZ
+  - OWLE
+- merchant: FASTag / Toll
+  contains:
+  - FASTAG
+  - NHAI
+  - TOLL
+- merchant: Firstcry
+  contains:
+  - FIRSTCRY
+- merchant: Flipkart
+  contains:
+  - FLIPKART
+  - FKMP
+- merchant: Fortis
+  contains:
+  - FORTIS
+- merchant: Freecharge
+  contains:
+  - FREECHARGE
+- merchant: Fullerton India
+  contains:
+  - FULLERTON
 - merchant: Gas / LPG
   contains:
   - INDIAN OIL
@@ -414,47 +223,295 @@ rules:
   - INDANE
   - BHARAT GAS
   - LPG
-- merchant: FASTag / Toll
+- merchant: Goibibo
   contains:
-  - FASTAG
-  - NHAI
-  - TOLL
-- merchant: Car Fuel
+  - GOIBIBO
+- merchant: Google Pay
   contains:
-  - FUEL STATION
-  - PETROL
-  - HP PETROL
-  - SHELL
-  - IOCL PETROLEUM
-# ---- Insurance ----
-- merchant: ACKO Insurance
+  - GOOGLE PAY
+  - TEZ
+  - GPAY
+- merchant: Google Play / YouTube
   contains:
-  - ACKO
-- merchant: Max Life
+  - GOOGLEAD
+  - GOOGLE PLAY
+  - YOUTUBE
+  - GOOGLE ADS
+- merchant: Govt. Scheme (PPF, SSY, ...)
   contains:
-  - MAX LIFE
-- merchant: LIC
+  - SSY
+  - PPF
+- merchant: Haldiram's
   contains:
-  - LIC
-- merchant: Bajaj Allianz
+  - HALDIRAM
+- merchant: Hathway
   contains:
-  - BAJAJ ALLIANZ
-- merchant: ICICI Lombard
+  - HATHWAY
+- merchant: HDB Financial
   contains:
-  - ICICI LOMBARD
+  - HDB FINANCIAL
+- merchant: HDFC Card
+  contains:
+  - HDFC CARD
 - merchant: HDFC ERGO
   contains:
   - HDFC ERGO
-- merchant: Tata AIG
+- merchant: Hypermarket
   contains:
-  - TATA AIG
+  - HYPERMARKET
+  - HYPER MART
+  - SUPER MARKET
+  - MEGA MART
+- merchant: ICICI Card
+  contains:
+  - ICICI CARD
+- merchant: ICICI Lombard
+  contains:
+  - ICICI LOMBARD
+- merchant: IIFL
+  contains:
+  - IIFL
+- merchant: IKEA
+  contains:
+  - IKEA
+- merchant: Income tax
+  contains:
+  - ITR
+- merchant: India Post
+  contains:
+  - INDIA POST
+- merchant: IndiGo
+  contains:
+  - INDIGO
+- merchant: INOX
+  contains:
+  - INOX
+- merchant: Instamart
+  contains:
+  - INSTAMART
+- merchant: IRCTC
+  contains:
+  - IRCTC
+- merchant: Jewellery
+  contains:
+  - JEWE
+  - JEWEL
+  - JEWELLERY
+- merchant: Jio
+  contains:
+  - JIO
+- merchant: JioSaavn
+  contains:
+  - JIO SAAVN
+- merchant: Kalyan Jewellers
+  contains:
+  - KALYAN
+- merchant: KFC
+  contains:
+  - KFC
+- merchant: Kotak Card
+  contains:
+  - KOTAK CARD
+- merchant: Lenskart
+  contains:
+  - LENSKART
+  - LKST
+- merchant: LIC
+  contains:
+  - LIC
+- merchant: LIC Housing
+  contains:
+  - LIC HOUSING
+- merchant: Licious
+  contains:
+  - LICIOUS
+- merchant: Lifestyle
+  contains:
+  - LIFESTYLE
+- merchant: Loan / EMI
+  contains:
+  - LOAN
+  - EMI
+  - REPAYMENT
+  - FORECLOSURE
+  - NACH MANDATE
+- merchant: Mahindra Finance
+  contains:
+  - MAHINDRA FINANCE
+  - M AND M FINANCIAL
+- merchant: MakeMyTrip
+  contains:
+  - MAKEMYTRIP
+- merchant: Manipal Hospitals
+  contains:
+  - MANIPAL
+- merchant: Max Fashion
+  contains:
+  - MAX FASHION
+  - TRENDS
+- merchant: Max Life
+  contains:
+  - MAX LIFE
+- merchant: McDonald's
+  contains:
+  - MCDONALD
+- merchant: MedPlus
+  contains:
+  - MEDPLUS
+- merchant: Meesho
+  contains:
+  - MEESHO
+- merchant: Mobikwik
+  contains:
+  - MOBIKWIK
+- merchant: More Supermarket
+  contains:
+  - MORE SUPERMARKET
+  - MORE MARKET
+- merchant: Muthoot Finance
+  contains:
+  - MUTHOOT
+- merchant: Mutual Funds
+  contains:
+  - BILLDKINDIANCLEARING
+  - MFUTIL
+- merchant: Myntra
+  contains:
+  - MYNTRA
+- merchant: Narayana Health
+  contains:
+  - NARAYANA
+- merchant: Netflix
+  contains:
+  - NETFLIX
+- merchant: Netmeds
+  contains:
+  - NETMEDS
+- merchant: Nexa Car Service
+  contains:
+  - BIMAL AUTO
+- merchant: Nike
+  contains:
+  - NIKE
+- merchant: Nilgiris
+  contains:
+  - NILGIRIS
+- merchant: NPS / Pension
+  contains:
+  - NPS
+- merchant: Nykaa
+  contains:
+  - NYKAA
+- merchant: Ola
+  contains:
+  - OLA
+- merchant: OnePlus
+  contains:
+  - ONEPLUS
+- merchant: OYO
+  contains:
+  - OYO
+- merchant: Pantaloons
+  contains:
+  - PANTALOON
+- merchant: Paytm
+  contains:
+  - PAYTM
+- merchant: Paytm Postpaid
+  contains:
+  - PAYTM POSTPAID
+- merchant: PharmEasy
+  contains:
+  - PHARMEASY
+- merchant: PhonePe
+  contains:
+  - PHONEPE
+- merchant: Pizza Hut
+  contains:
+  - PIZZA HUT
+- merchant: PN Gadgil Jewellers
+  contains:
+  - P N GADGIL
+  - PNGUNKNOWN
+- merchant: PolicyBazaar
+  contains:
+  - POLICYBAZAAR
+- merchant: Porter
+  contains:
+  - PORTER
+- merchant: Puma
+  contains:
+  - PUMA
+- merchant: PVR
+  contains:
+  - PVR
+- merchant: Rapido
+  contains:
+  - RAPIDO
+- merchant: Ratnadeep
+  contains:
+  - RATNADEEP
+- merchant: Razorpay
+  contains:
+  - RAZORPAY
+- merchant: redBus
+  contains:
+  - REDBUS
+- merchant: Reliance Digital
+  contains:
+  - RELIANCE DIGITAL
+  - RELIANCE
+- merchant: Reliance Smart/Fresh
+  contains:
+  - RELIANCE FRESH
+  - RELIANCE SMART
+  - RELIANCE RETAIL
+  - SMART POINT
+- merchant: Restaurant
+  contains:
+  - FOOD
+- merchant: SafExpress
+  contains:
+  - SAFEXPRESS
+- merchant: Samsung
+  contains:
+  - SAMSUNG
+- merchant: SBI Card
+  contains:
+  - SBI CARD
+- merchant: School Fees
+  contains:
+  - ADMISSION
+  - SCHOOL
+  - ACADEMY
+- merchant: Shoppers Stop
+  contains:
+  - SHOPPERS STOP
+- merchant: Shriram Finance
+  contains:
+  - SHRIRAM
+- merchant: Snapdeal
+  contains:
+  - SNAPDEAL
+- merchant: SonyLIV
+  contains:
+  - SONY LIV
+- merchant: Spencer's
+  contains:
+  - SPENCER
+  - SPENCERS
+- merchant: SpiceJet
+  contains:
+  - SPICEJET
+- merchant: Spotify
+  contains:
+  - SPOTIFY
 - merchant: Star Health
   contains:
   - STAR HEALTH
-- merchant: Digit Insurance
+- merchant: Starbucks
   contains:
-  - DIGIT INSURANCE
-# ---- Investments ----
+  - STARBUCKS
 - merchant: Stocks
   contains:
   - ZERODHA
@@ -468,167 +525,89 @@ rules:
   - 5PAISA
   - KUVERA
   - PAYTM MONEY
-- merchant: Mutual Funds
+- merchant: Subway
   contains:
-  - BILLDKINDIANCLEARING
-  - MFUTIL
-- merchant: NPS / Pension
+  - SUBWAY
+- merchant: Swiggy
   contains:
-  - NPS
-- merchant: Govt. Scheme (PPF, SSY, ...)
+  - SWIGGY
+  - DINEOUT
+- merchant: Tanishq
   contains:
-  - SSY
-  - PPF
-- merchant: Income tax
+  - TANISHQ
+- merchant: Tata 1mg
   contains:
-  - ITR
-# ---- Loans, EMIs & Credit Cards ----
-- merchant: Bajaj Finserv Loan
+  - 1MG
+- merchant: Tata AIG
   contains:
-  - BAJAJ FINSERV
-  - BAJAJ FINANCE
-  - BAJAJ HOUSING
+  - TATA AIG
 - merchant: Tata Capital
   contains:
   - TATA CAPITAL
   - TATA CREDIT
-- merchant: LIC Housing
+- merchant: Tata CLiQ
   contains:
-  - LIC HOUSING
-- merchant: Shriram Finance
+  - TATACLIQ
+- merchant: Tata Play
   contains:
-  - SHRIRAM
-- merchant: Muthoot Finance
+  - TATA PLAY
+  - TATASKY
+- merchant: Titan
   contains:
-  - MUTHOOT
-- merchant: IIFL
-  contains:
-  - IIFL
-- merchant: Mahindra Finance
-  contains:
-  - MAHINDRA FINANCE
-  - M AND M FINANCIAL
+  - TITAN
 - merchant: TVS Credit
   contains:
   - TVS CREDIT
   - TVS FINANCE
-- merchant: Fullerton India
+- merchant: Uber
   contains:
-  - FULLERTON
-- merchant: HDB Financial
-  contains:
-  - HDB FINANCIAL
-- merchant: Paytm Postpaid
-  contains:
-  - PAYTM POSTPAID
-- merchant: Amazon Pay Later
-  contains:
-  - AMAZON PAY LATER
-- merchant: SBI Card
-  contains:
-  - SBI CARD
-- merchant: HDFC Card
-  contains:
-  - HDFC CARD
-- merchant: ICICI Card
-  contains:
-  - ICICI CARD
-- merchant: Axis Card
-  contains:
-  - AXIS CARD
-- merchant: Kotak Card
-  contains:
-  - KOTAK CARD
-- merchant: Amex
-  contains:
-  - AMERICAN EXPRESS
-  - AMEX
-- merchant: Loan / EMI
-  contains:
-  - LOAN
-  - EMI
-  - REPAYMENT
-  - FORECLOSURE
-  - NACH MANDATE
-- merchant: Credit Card
-  contains:
-  - CREDIT CARD
-  - CREDIT
-  - CARD PAYMENT
-  - CARD EMI
-  - VISA
-  - MASTERCARD
-  - RUPAY
-- merchant: CRED
-  contains:
-  - CRED
-- merchant: BILLDESK
-  contains:
-  - BILLDESK
-# ---- Education & Local ----
-- merchant: School Fees
-  contains:
-  - ADMISSION
-  - SCHOOL
-  - ACADEMY
-- merchant: Nexa Car Service
-  contains:
-  - BIMAL AUTO
+  - UBER
 - merchant: Urban Company
   contains:
   - URBAN COMPANY
-- merchant: Dunzo
-  contains:
-  - DUNZO
-- merchant: Porter
-  contains:
-  - PORTER
-- merchant: Delhivery
-  contains:
-  - DELHIVERY
-- merchant: India Post
-  contains:
-  - INDIA POST
-- merchant: DTDC
-  contains:
-  - DTDC
-- merchant: SafExpress
-  contains:
-  - SAFEXPRESS
-# ---- Healthcare ----
-- merchant: Apollo
-  contains:
-  - APOLLO
-- merchant: Fortis
-  contains:
-  - FORTIS
-- merchant: Manipal Hospitals
-  contains:
-  - MANIPAL
-- merchant: Narayana Health
-  contains:
-  - NARAYANA
-- merchant: PharmEasy
-  contains:
-  - PHARMEASY
-- merchant: Netmeds
-  contains:
-  - NETMEDS
-- merchant: Apollo Pharmacy
-  contains:
-  - APOLLO PHARMACY
-- merchant: Tata 1mg
-  contains:
-  - 1MG
-- merchant: MedPlus
-  contains:
-  - MEDPLUS
-- merchant: Cult.fit
-  contains:
-  - CULTFIT
-  - CULT FIT
-# ---- Vacation ----
 - merchant: Vacation
   contains:
   - HOLIDAY
   - TRIP
+- merchant: Van Heusen
+  contains:
+  - VAN HEUSEN
+- merchant: Vijay Sales
+  contains:
+  - VIJAY SALES
+- merchant: Vistara
+  contains:
+  - VISTARA
+- merchant: Vodafone Idea
+  contains:
+  - VODAFONE
+  - IDEA
+- merchant: Westside
+  contains:
+  - WESTSIDE
+- merchant: Woodland
+  contains:
+  - WOODLAND
+- merchant: Wow! Momo
+  contains:
+  - WOW MOMO
+  - WOW MOMOS
+- merchant: Xiaomi
+  contains:
+  - XIAOMI
+  - MI STORE
+- merchant: Yatra
+  contains:
+  - YATRA
+- merchant: Zee5
+  contains:
+  - ZEE5
+- merchant: Zepto
+  contains:
+  - ZEPTO
+- merchant: Zomato
+  contains:
+  - ZOMATO
+- merchant: Zudio
+  contains:
+  - ZUDIO
