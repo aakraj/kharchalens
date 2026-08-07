@@ -97,7 +97,7 @@ with dev_col:
 
 _prev_dev = st.session_state.get("_dev_prev", False)
 if developer_mode and not _prev_dev:
-    st.session_state["active_tab"] = "developer"
+    st.session_state["active_view_sel"] = "🛠 Developer"
 st.session_state["_dev_prev"] = developer_mode
 
 uploaded = st.file_uploader("Upload HDFC Statement", type=["xls", "xlsx", "pdf"])
@@ -137,19 +137,17 @@ if uploaded:
 #==========================================================================================
 # Dashboard Tab
 #==========================================================================================
-        view = st.session_state.get("active_tab", "dashboard")
         _label_to_view = {
             "📊 Dashboard": "dashboard",
             "📄 Transactions": "transactions",
             "🛠 Developer": "developer",
         }
-        _stub = {v: k for k, v in _label_to_view.items()}
         view_options = ["📊 Dashboard", "📄 Transactions"]
         if developer_mode:
             view_options.append("🛠 Developer")
-        if view == "developer" and not developer_mode:
-            view = "dashboard"
-        st.session_state["active_view_sel"] = _stub.get(view, "📊 Dashboard")
+        _current = st.session_state.get("active_view_sel", "📊 Dashboard")
+        if _current not in view_options:
+            _current = "📊 Dashboard"
         _choice = st.segmented_control(
             "View",
             options=view_options,
@@ -157,9 +155,12 @@ if uploaded:
             label_visibility="collapsed",
             selection_mode="single",
         )
-        if _choice in _label_to_view:
-            view = _label_to_view[_choice]
-        st.session_state["active_tab"] = view
+        if _choice not in _label_to_view:
+            _choice = _current
+        view = _label_to_view.get(_choice, "dashboard")
+        if view == "developer" and not developer_mode:
+            view = "dashboard"
+            st.session_state["active_view_sel"] = "📊 Dashboard"
 
         if view == "dashboard":
             start_date = min(t.date for t in transactions)
