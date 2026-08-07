@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import io
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from typing import Any, cast
 
 import pandas as pd
@@ -9,6 +11,113 @@ import pandas as pd
 from kharchalens.models import Transaction, TransactionType
 
 from .base import StatementParser
+
+
+class ExcelPasswordRequired(ValueError):
+    """The statement workbook is encrypted and no password was supplied."""
+
+
+class ExcelIncorrectPassword(ValueError):
+    """The supplied password did not decrypt the statement workbook."""
+
+
+def _is_encrypted_container(file_path: str) -> bool:
+    try:
+        import msoffcrypto
+
+        with open(file_path, "rb") as handle:
+            return bool(msoffcrypto.OfficeFile(handle).is_encrypted())
+    except Exception:  # noqa: BLE001 - sniffing may fail on odd containers
+        return False
+
+
+def _read_plain_excel(file_path: str) -> pd.DataFrame:
+    raw = Path(file_path).read_bytes()
+    head = raw[:512].lstrip().lower()
+
+    if head.startswith(b"pk\x03\x04"):
+        return pd.read_excel(
+            file_path,
+            engine="openpyxl",
+            header=None,
+            dtype=object,
+        )
+
+    if head.startswith(b"\xd0\xcf\x11\xe0"):
+        return pd.read_excel(
+            file_path,
+            engine="xlrd",
+            header=None,
+            dtype=object,
+        )
+
+    raise ValueError(
+        "Only Excel files (.xls / .xlsx) are currently supported."
+    )
+
+
+def _decrypt_excel(
+        file_path: str,
+        password: str,
+) -> pd.DataFrame | None:
+    """Decrypt a password-protected workbook; None when it isn't encrypted."""
+    import msoffcrypto
+
+    output = io.BytesIO()
+
+    try:
+        with open(file_path, "rb") as handle:
+            office = msoffcrypto.OfficeFile(handle)
+
+            if not office.is_encrypted():
+                return None
+
+            # No verify_password here: some creators (e.g. Apple Numbers)
+            # write an agile verifier that rejects even the correct password.
+            # We confirm the password below by checking the decrypted bytes.
+            office.load_key(password=password)
+            office.decrypt(output)
+    except (
+        msoffcrypto.exceptions.InvalidKeyError,
+        msoffcrypto.exceptions.DecryptionError,
+        msoffcrypto.exceptions.FileFormatError,
+    ) as exc:
+        raise ExcelIncorrectPassword(
+            "The password did not decrypt this Excel statement."
+        ) from exc
+
+    output.seek(0)
+    try:
+        return pd.read_excel(
+            output,
+            engine="openpyxl",
+            header=None,
+            dtype=object,
+        )
+    except Exception as exc:  # garbage bytes mean wrong key
+        raise ExcelIncorrectPassword(
+            "The password did not decrypt this Excel statement."
+        ) from exc
+
+
+def read_excel_like(
+        file_path: str,
+        password: str | None = None,
+) -> pd.DataFrame:
+    """Read a workbook, decrypting it first when a password is supplied."""
+    if password is not None:
+        decrypted = _decrypt_excel(file_path, password)
+        if decrypted is not None:
+            return decrypted
+        return _read_plain_excel(file_path)
+
+    if _is_encrypted_container(file_path):
+        raise ExcelPasswordRequired(
+            "This Excel statement is password-protected. "
+            "Enter its password to continue."
+        )
+
+    return _read_plain_excel(file_path)
 
 
 class HdfcStatementParser(StatementParser):

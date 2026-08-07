@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import pandas as pd
 
 from kharchalens.models import Transaction
 
+from .hdfc_base import read_excel_like
 from .sbi_base import SbiStatementParser
 
 
@@ -19,8 +18,8 @@ class SbiParser(SbiStatementParser):
     so column names, not positions, are what matter here.
     """
 
-    def parse(self, file_path: str) -> list[Transaction]:
-        raw_df = self._read_statement(file_path)
+    def parse(self, file_path: str, password: str | None = None) -> list[Transaction]:
+        raw_df = self._read_statement(file_path, password=password)
         header_row = self._find_header_row(raw_df)
 
         if header_row is None:
@@ -38,26 +37,11 @@ class SbiParser(SbiStatementParser):
         return self._rows_to_transactions(rows)
 
     @staticmethod
-    def _read_statement(file_path: str) -> pd.DataFrame:
-        suffix = Path(file_path).suffix.lower()
-
-        if suffix == ".xls":
-            return pd.read_excel(
-                file_path,
-                engine="xlrd",
-                header=None,
-                dtype=object,
-            )
-
-        if suffix == ".xlsx":
-            return pd.read_excel(
-                file_path,
-                engine="openpyxl",
-                header=None,
-                dtype=object,
-            )
-
-        raise ValueError("Only .xls and .xlsx files are currently supported.")
+    def _read_statement(
+            file_path: str,
+            password: str | None = None,
+    ) -> pd.DataFrame:
+        return read_excel_like(file_path, password=password)
 
     def _find_header_row(self, raw_df: pd.DataFrame) -> int | None:
         expected_keys = {"post_date", "value_date", "date"}

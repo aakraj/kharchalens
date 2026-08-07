@@ -27,7 +27,7 @@ def _parse(monkeypatch, raw: pd.DataFrame):
     monkeypatch.setattr(
         SbiParser,
         "_read_statement",
-        lambda self, path: raw,
+        lambda self, path, password=None: raw,
     )
     return parser.parse("dummy.xls")
 

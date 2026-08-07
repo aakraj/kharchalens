@@ -19,6 +19,7 @@ dependencies = [
     "rapidfuzz>=3.14.0",
     "pdfplumber>=0.11.10",
     "cryptography==42.0.8",
+    "msoffcrypto-tool>=6.0.0",
 ]
 
 [dependency-groups]

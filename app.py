@@ -21,6 +21,8 @@ from kharchalens.enrichment import TransactionEnricher
 from kharchalens.merchant.preprocessing import NarrationPreprocessor
 from kharchalens.merchant.rule_store import MerchantRuleStore
 from kharchalens.parser import (
+    ExcelIncorrectPassword,
+    ExcelPasswordRequired,
     HdfcParser,
     HdfcPdfParser,
     PdfIncorrectPassword,
@@ -73,10 +75,10 @@ def _parse_statement(
         if which == "SBI":
             if suffix == ".pdf":
                 return SbiPdfParser().parse(temp_file, password=password)
-            return SbiParser().parse(temp_file)
+            return SbiParser().parse(temp_file, password=password)
         if suffix == ".pdf":
             return HdfcPdfParser().parse(temp_file, password=password)
-        return HdfcParser().parse(temp_file)
+        return HdfcParser().parse(temp_file, password=password)
 
     candidates = [bank, "SBI" if bank != "SBI" else "HDFC"]
 
@@ -139,31 +141,30 @@ bank = bank_col.selectbox("Bank", ["HDFC", "SBI"], key="bank_choice")
 if uploaded:
     suffix = Path(uploaded.name).suffix.lower() if Path(uploaded.name).suffix else ".xls"
 
-    pdf_password = None
-    if suffix == ".pdf":
-        pdf_password = st.text_input(
-            "🔒 PDF Password",
-            type="password",
-            key="pdf_password",
-            autocomplete="on",
-            width=280,
-            help=(
-                "Only needed for password-protected statements. This is the "
-                "password HDFC asked you to set when downloading the "
-                "e-statement (often your first-name initial + the last 4 "
-                "digits of your customer ID)."
-            ),
-        ) or None
+    password = st.text_input(
+        "🔒 Statement Password",
+        type="password",
+        key="statement_password",
+        autocomplete="on",
+        width=280,
+        help=(
+            "Only needed for password-protected statements (PDFs or "
+            "encrypted Excel files). For HDFC PDFs this is the password "
+            "you set when downloading the e-statement (often your "
+            "first-name initial + the last 4 digits of your customer ID)."
+        ),
+    ) or None
 
     try:
-        if suffix == ".pdf":
-            with st.spinner("Parsing PDF statement… this can take a few seconds"):
-                transactions, used_bank = _parse_statement(
-                    uploaded.getvalue(), suffix, bank, pdf_password, _rules_signature()
-                )
-        else:
+        with st.spinner(
+            "Parsing statement… this can take a few seconds"
+        ):
             transactions, used_bank = _parse_statement(
-                uploaded.getvalue(), suffix, bank, None, _rules_signature()
+                uploaded.getvalue(),
+                suffix,
+                bank,
+                password,
+                _rules_signature(),
             )
 
         summary = build_summary(transactions)
@@ -413,9 +414,16 @@ if uploaded:
     except PdfPasswordRequired:
         st.error(
             "🔒 This PDF statement is password-protected. Enter its "
-            "password in the PDF Password field above."
+            "password in the Password field above."
         )
     except PdfIncorrectPassword:
+        st.error("🔒 The password is incorrect. Please try again.")
+    except ExcelPasswordRequired:
+        st.error(
+            "🔒 This Excel statement is password-protected. Enter its "
+            "password in the Password field above."
+        )
+    except ExcelIncorrectPassword:
         st.error("🔒 The password is incorrect. Please try again.")
     except Exception as ex:  # noqa: BLE001 - surface any error in the UI
         st.exception(ex)
