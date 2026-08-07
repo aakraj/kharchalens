@@ -112,6 +112,29 @@ class SbiPdfParser(SbiStatementParser):
         return None
 
     @staticmethod
+    def _suspected_header(
+            lines: list[list[tuple[float, float, float, str]]],
+    ) -> str | None:
+        """Return the first line that looks like a column-header row.
+
+        Only column labels are surfaced here (never transaction content), so
+        the hint in error messages stays privacy-safe.
+        """
+        keywords = (
+            "DATE", "VALUE", "PARTICULARS", "NARRATION", "DETAIL", "REF",
+            "DEBIT", "DEPOSIT", "CREDIT", "WITHDRAWAL", "BALANCE", "CHQ",
+            "AMOUNT", "TXNDATE", "TXN DATE", "TRANSACTION",
+        )
+
+        for line in lines:
+            texts = " ".join(word[3] for word in line).upper()
+            hits = sum(1 for keyword in keywords if keyword in texts)
+            if hits >= 2:
+                return " ".join(word[3] for word in line)
+
+        return None
+
+    @staticmethod
     def _is_header_line(
             line: list[tuple[float, float, float, str]],
     ) -> bool:
@@ -182,8 +205,16 @@ class SbiPdfParser(SbiStatementParser):
         columns = self._header_columns(lines)
 
         if columns is None:
+            header_hint = self._suspected_header(lines)
+            hint = (
+                f" Column-header row found: {header_hint!r}."
+                if header_hint
+                else " No column-header row was found (this may be a "
+                "scanned/image-only PDF)."
+            )
             raise ValueError(
                 "Could not identify this as an SBI statement in this PDF."
+                + hint
             )
 
         pending: list[dict[str, object]] = []
