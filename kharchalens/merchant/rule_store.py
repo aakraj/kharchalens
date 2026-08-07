@@ -8,6 +8,26 @@ import yaml
 class MerchantRuleStore:
 
     @staticmethod
+    def merchant_names() -> list[str]:
+        """Return the sorted, de-duplicated merchant names from all rule files."""
+        names: set[str] = set()
+        project_root = Path.cwd()
+        paths = [
+            Path(__file__).resolve().parent.parent / "config" / "merchants.yml",
+            project_root / "local_data" / "merchants.local.yml",
+        ]
+        for path in paths:
+            if not path.exists():
+                continue
+            with open(path, encoding="utf-8") as f:
+                config = yaml.safe_load(f) or {}
+            for rule in config.get("rules", []):
+                name = rule.get("merchant", "")
+                if name:
+                    names.add(name)
+        return sorted(names, key=str.upper)
+
+    @staticmethod
     def add_rule(
             merchant: str,
             keyword: str,

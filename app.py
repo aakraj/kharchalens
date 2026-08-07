@@ -250,6 +250,8 @@ if uploaded:
                 """
                 )
                 st.markdown("### 💸 Top Unknown Spending")
+                known_merchants = MerchantRuleStore.merchant_names()
+                merchant_options = ["Select merchant…"] + known_merchants + ["✍️ Add new merchant…"]
                 header = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
 
                 header[0].markdown("**Spend**")
@@ -266,14 +268,34 @@ if uploaded:
                     cols[1].write(item.transactions)
                     cols[2].write(item.narration)
 
-                    merchant = cols[3].text_input("Merchant", key=f"merchant_{item.narration}", label_visibility="collapsed")
+                    merchant_sel = cols[3].selectbox(
+                        "Merchant",
+                        merchant_options,
+                        key=f"merchant_sel_{item.narration}",
+                        label_visibility="collapsed",
+                    )
+                    if merchant_sel == "✍️ Add new merchant…":
+                        merchant = cols[3].text_input(
+                            "New merchant name",
+                            key=f"merchant_new_{item.narration}",
+                            placeholder="Type merchant name…",
+                            label_visibility="collapsed",
+                        )
+                    elif merchant_sel == "Select merchant…":
+                        merchant = ""
+                    else:
+                        merchant = merchant_sel
+
                     keyword = cols[4].text_input("Keyword", value=item.narration, key=f"keyword_{item.narration}", label_visibility="collapsed")
                     local = cols[5].toggle("Save locally", value=True, key=f"local_{item.narration}", label_visibility="collapsed")
 
                     if cols[6].button("➕ Add", key=f"save_{item.narration}"):
-                        MerchantRuleStore.add_rule(merchant=merchant, keyword=keyword, local=local)
-                        st.toast("Rule saved.")
-                        st.rerun()
+                        if not merchant:
+                            st.toast("Pick or enter a merchant first.", icon="⚠️")
+                        else:
+                            MerchantRuleStore.add_rule(merchant=merchant, keyword=keyword, local=local)
+                            st.toast("Rule saved.")
+                            st.rerun()
 #==========================================================================================
 # Transactions Tab
 #==========================================================================================
