@@ -251,7 +251,13 @@ if uploaded:
                 )
                 st.markdown("### 💸 Top Unknown Spending")
                 known_merchants = MerchantRuleStore.merchant_names()
-                merchant_options = known_merchants + ["✍️ Add new merchant…"]
+                local_merchants = MerchantRuleStore.merchant_sources(local=True)
+                _local_suffix = " (Local)"
+
+                merchant_options = [
+                    f"{m}{_local_suffix}" if m in local_merchants else m
+                    for m in known_merchants
+                ] + ["✍️ Add new merchant…"]
                 header = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
 
                 header[0].markdown("**Spend**")
@@ -283,13 +289,23 @@ if uploaded:
                             placeholder="Type merchant name…",
                             label_visibility="collapsed",
                         )
+                        local_default = st.session_state.get(
+                            f"local_{item.narration}", True
+                        )
                     elif merchant_sel is None:
                         merchant = ""
+                        local_default = st.session_state.get(
+                            f"local_{item.narration}", True
+                        )
                     else:
                         merchant = merchant_sel
+                        if merchant.endswith(_local_suffix):
+                            merchant = merchant.rstrip()[: -len(_local_suffix)]
+                        local_default = merchant in local_merchants
+                        st.session_state[f"local_{item.narration}"] = local_default
 
                     keyword = cols[4].text_input("Keyword", value=item.narration, key=f"keyword_{item.narration}", label_visibility="collapsed")
-                    local = cols[5].toggle("Save locally", value=True, key=f"local_{item.narration}", label_visibility="collapsed")
+                    local = cols[5].toggle("Save locally", value=local_default, key=f"local_{item.narration}", label_visibility="collapsed")
 
                     if cols[6].button("➕ Add", key=f"save_{item.narration}"):
                         if not merchant:

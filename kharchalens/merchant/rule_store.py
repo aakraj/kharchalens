@@ -28,6 +28,29 @@ class MerchantRuleStore:
         return sorted(names, key=str.upper)
 
     @staticmethod
+    def merchant_sources(local: bool) -> set[str]:
+        """Return the set of merchant names defined in a single rule file.
+
+        ``local=True`` reads the gitignored ``local_data/merchants.local.yml``,
+        ``local=False`` reads the committed ``merchants.yml``.
+        """
+        project_root = Path.cwd()
+        path = (
+            project_root / "local_data" / "merchants.local.yml"
+            if local
+            else Path(__file__).resolve().parent.parent / "config" / "merchants.yml"
+        )
+        names: set[str] = set()
+        if path.exists():
+            with open(path, encoding="utf-8") as f:
+                config = yaml.safe_load(f) or {}
+            for rule in config.get("rules", []):
+                name = rule.get("merchant", "")
+                if name:
+                    names.add(name)
+        return names
+
+    @staticmethod
     def add_rule(
             merchant: str,
             keyword: str,
