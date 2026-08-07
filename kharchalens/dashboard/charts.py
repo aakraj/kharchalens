@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from datetime import date
 from decimal import Decimal
 
 import pandas as pd
@@ -67,15 +68,27 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
     if not monthly_totals:
         return
 
+    sorted_months = sorted(monthly_totals)
+    years = {month[:4] for month in sorted_months}
+    show_year = len(years) > 1
+    def _month_label(month: str) -> str:
+        year, mon = month.split("-")
+        return date(int(year), int(mon), 1).strftime(
+            "%b %y" if show_year else "%b"
+        )
+
+    month_labels = {
+        month: _month_label(month)
+        for month in sorted_months
+    }
+
     df = (
         pd.DataFrame(
             {
-                "Month": list(monthly_totals.keys()),
-                "Spent": [float(v) for v in monthly_totals.values()],
-                "Label": [
-                    format_inr(v)
-                    for v in monthly_totals.values()
-                ],
+                "Month": sorted_months,
+                "MonthLabel": [month_labels[m] for m in sorted_months],
+                "Spent": [float(monthly_totals[m]) for m in sorted_months],
+                "Label": [format_inr(monthly_totals[m]) for m in sorted_months],
             }
         )
         .sort_values("Month")
@@ -86,6 +99,7 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
         x="Month",
         y="Spent",
         text="Label",
+        custom_data=["MonthLabel"],
         color_discrete_sequence=[ACCENT],
     )
 
@@ -97,9 +111,18 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
         marker_color=bar_colors(values),
     )
     fig.update_traces(
-        hovertemplate="%{y}<br>%{text}<extra></extra>"
+        hovertemplate="%{customdata[0]}<br>%{text}<extra></extra>"
     )
-    fig.update_layout(**_LAYOUT)
+    fig.update_layout(
+        xaxis={
+            "tickmode": "array",
+            "tickvals": df["Month"].tolist(),
+            "ticktext": df["MonthLabel"].tolist(),
+            "tickangle": 0,
+            "automargin": True,
+        },
+        **_LAYOUT,
+    )
     st.plotly_chart(fig, width="stretch")
 
 

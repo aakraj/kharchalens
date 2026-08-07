@@ -56,7 +56,11 @@ class MerchantResolver:
 
             for keyword in rule.contains:
 
-                compact_keyword = self._compact(keyword)
+                compact_keyword = self._compact(
+                    NarrationPreprocessor.preprocess(
+                        NarrationNormalizer.normalize(keyword)
+                    )
+                )
 
                 if compact_keyword and compact_keyword in preprocessed:
                     return rule.merchant
