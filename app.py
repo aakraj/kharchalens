@@ -83,7 +83,22 @@ with hero:
     )
 
 with dev_col:
-    developer_mode = st.toggle("🛠 Developer Mode", value=False)
+    developer_mode = st.toggle(
+        "🛠 Developer Mode",
+        value=False,
+        key="developer_mode",
+        help=(
+            "Turn this on to see how well KharchaLens recognized your "
+            "transactions, review the ones it couldn't classify, and teach it "
+            "new merchant rules. Leave it off for a clean view. Switching it "
+            "on lands you directly on the Developer tab."
+        ),
+    )
+
+_prev_dev = st.session_state.get("_dev_prev", False)
+if developer_mode and not _prev_dev:
+    st.session_state["active_tab"] = "developer"
+st.session_state["_dev_prev"] = developer_mode
 
 uploaded = st.file_uploader("Upload HDFC Statement", type=["xls", "xlsx", "pdf"])
 
@@ -122,13 +137,31 @@ if uploaded:
 #==========================================================================================
 # Dashboard Tab
 #==========================================================================================
-        developer_tab = None
+        view = st.session_state.get("active_tab", "dashboard")
+        _label_to_view = {
+            "📊 Dashboard": "dashboard",
+            "📄 Transactions": "transactions",
+            "🛠 Developer": "developer",
+        }
+        _stub = {v: k for k, v in _label_to_view.items()}
+        view_options = ["📊 Dashboard", "📄 Transactions"]
         if developer_mode:
-            dashboard_tab, transactions_tab, developer_tab = st.tabs(["📊 Dashboard", "📄 Transactions", "🛠 Developer"])
-        else:
-            dashboard_tab, transactions_tab = st.tabs(["📊 Dashboard", "📄 Transactions"])
+            view_options.append("🛠 Developer")
+        if view == "developer" and not developer_mode:
+            view = "dashboard"
+        st.session_state["active_view_sel"] = _stub.get(view, "📊 Dashboard")
+        _choice = st.segmented_control(
+            "View",
+            options=view_options,
+            key="active_view_sel",
+            label_visibility="collapsed",
+            selection_mode="single",
+        )
+        if _choice in _label_to_view:
+            view = _label_to_view[_choice]
+        st.session_state["active_tab"] = view
 
-        with dashboard_tab:
+        if view == "dashboard":
             start_date = min(t.date for t in transactions)
             end_date = max(t.date for t in transactions)
             st.success(
@@ -136,6 +169,11 @@ if uploaded:
                 f"{len(transactions)} transactions • "
                 f"{start_date.strftime('%d %b %Y')} – "
                 f"{end_date.strftime('%d %b %Y')}"
+            )
+            st.caption(
+                "⚠️ Parsed automatically — some amounts, dates, or merchants "
+                "may occasionally be misread. Verify against your original "
+                "statement."
             )
 
             col1, col2, col3, col4 = st.columns(4)
@@ -166,58 +204,80 @@ if uploaded:
 #==========================================================================================
 # Developer tab
 #==========================================================================================
-        if developer_tab:
-            with developer_tab:
-                st.subheader("🛠 Developer Insights")
-                coverage = merchant_coverage(transactions)
-                c1, c2, c3 = st.columns(3)
-                c1.metric("Recognized Merchants",coverage.recognized,)
-                c2.metric("Unknown Merchants",coverage.unknown,)
-                c3.metric("Coverage",f"{coverage.coverage:.1f}%",)
-                unknown_spd = unknown_spending(transactions)
+        elif view == "developer":
+            st.subheader("🛠 Developer Insights")
+            st.info(
+                "**When to use this tab:** switch on **Developer Mode** "
+                "(top-right toggle) to inspect how KharchaLens classified "
+                "your transactions. Use it when you want to —\n\n"
+                "- **Improve merchant recognition** by teaching it new "
+                "merchants for transactions it didn't recognize.\n"
+                "- **Check coverage** — see how many transactions were "
+                "matched vs. left as *Unknown*.\n"
+                "- **Debug a statement** — confirm the parser picked up the "
+                "right number of transactions and amounts.\n\n"
+                "It doesn't change how your data is processed; it only "
+                "surfaces extra detail."
+            )
+            st.warning(
+                "**Disclaimer:** KharchaLens parses bank statements "
+                "automatically and may occasionally go wrong. Amounts, "
+                "dates, or merchants can be misread, and some transactions "
+                "may not be detected correctly — especially with complex "
+                "or multi-line narrations, PDFs that aren't well laid out, "
+                "or table structure changes. Treat the output as a "
+                "starting point and verify against your original "
+                "statement, especially for exact balances or tax purposes."
+            )
+            coverage = merchant_coverage(transactions)
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Recognized Merchants",coverage.recognized,)
+            c2.metric("Unknown Merchants",coverage.unknown,)
+            c3.metric("Coverage",f"{coverage.coverage:.1f}%",)
+            unknown_spd = unknown_spending(transactions)
 
-                if unknown_spd:
-                    st.info(
-                        """
-                    💡 **Help KharchaLens get smarter**
-                    
-                    Review unknown transactions below and create merchant rules.
-                    
-                    - **Local** → Saves the rule only on your computer (recommended for family, friends, local shops, or private transactions).
-                    - **Public** → Contributes a generic merchant rule that can benefit all KharchaLens users.
-                    
-                    Once a rule is saved, matching transactions will be recognised automatically in future imports and will disappear from this list.
+            if unknown_spd:
+                st.info(
                     """
-                    )
-                    st.markdown("### 💸 Top Unknown Spending")
-                    header = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
+                💡 **Help KharchaLens get smarter**
+                
+                Review unknown transactions below and create merchant rules.
+                
+                - **Local** → Saves the rule only on your computer (recommended for family, friends, local shops, or private transactions).
+                - **Public** → Contributes a generic merchant rule that can benefit all KharchaLens users.
+                
+                Once a rule is saved, matching transactions will be recognised automatically in future imports and will disappear from this list.
+                """
+                )
+                st.markdown("### 💸 Top Unknown Spending")
+                header = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
 
-                    header[0].markdown("**Spend**")
-                    header[1].markdown("**Freq**")
-                    header[2].markdown("**Narration**")
-                    header[3].markdown("**Merchant**")
-                    header[4].markdown("**Keyword**")
-                    header[5].markdown("**Local**")
-                    header[6].markdown("**Save**")
+                header[0].markdown("**Spend**")
+                header[1].markdown("**Freq**")
+                header[2].markdown("**Narration**")
+                header[3].markdown("**Merchant**")
+                header[4].markdown("**Keyword**")
+                header[5].markdown("**Local**")
+                header[6].markdown("**Save**")
 
-                    for item in unknown_spd[:20]:
-                        cols = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
-                        cols[0].write(format_inr(item.total_spend))
-                        cols[1].write(item.transactions)
-                        cols[2].write(item.narration)
+                for item in unknown_spd[:20]:
+                    cols = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
+                    cols[0].write(format_inr(item.total_spend))
+                    cols[1].write(item.transactions)
+                    cols[2].write(item.narration)
 
-                        merchant = cols[3].text_input("Merchant", key=f"merchant_{item.narration}", label_visibility="collapsed")
-                        keyword = cols[4].text_input("Keyword", value=item.narration, key=f"keyword_{item.narration}", label_visibility="collapsed")
-                        local = cols[5].toggle("Save locally", value=True, key=f"local_{item.narration}", label_visibility="collapsed")
+                    merchant = cols[3].text_input("Merchant", key=f"merchant_{item.narration}", label_visibility="collapsed")
+                    keyword = cols[4].text_input("Keyword", value=item.narration, key=f"keyword_{item.narration}", label_visibility="collapsed")
+                    local = cols[5].toggle("Save locally", value=True, key=f"local_{item.narration}", label_visibility="collapsed")
 
-                        if cols[6].button("➕ Add", key=f"save_{item.narration}"):
-                            MerchantRuleStore.add_rule(merchant=merchant, keyword=keyword, local=local)
-                            st.toast("Rule saved.")
-                            st.rerun()
+                    if cols[6].button("➕ Add", key=f"save_{item.narration}"):
+                        MerchantRuleStore.add_rule(merchant=merchant, keyword=keyword, local=local)
+                        st.toast("Rule saved.")
+                        st.rerun()
 #==========================================================================================
 # Transactions Tab
 #==========================================================================================
-        with transactions_tab:
+        else:
             df = pd.DataFrame(
                 [
                     {
