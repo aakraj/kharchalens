@@ -57,27 +57,48 @@ def _parse_statement(
         bank: str,
         password: str | None,
         rules_signature: str,
-) -> list:
-    """Parse and enrich a statement once; cached so reruns skip the slow work."""
+) -> tuple[list, str]:
+    """Parse and enrich a statement once; cached so reruns skip the slow work.
+
+    The preferred parser is chosen by the ``bank`` the user picked. If that
+    bank cannot even recognise the statement's table (wrong bank chosen), the
+    other bank is tried automatically. Returns (transactions, bank_used).
+    """
     enricher = TransactionEnricher()
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
         tmp.write(file_bytes)
         temp_file = tmp.name
 
-    if bank == "SBI":
+    def _run(which: str) -> list:
+        if which == "SBI":
+            if suffix == ".pdf":
+                return SbiPdfParser().parse(temp_file, password=password)
+            return SbiParser().parse(temp_file)
         if suffix == ".pdf":
-            transactions = SbiPdfParser().parse(temp_file, password=password)
-        else:
-            transactions = SbiParser().parse(temp_file)
-    elif suffix == ".pdf":
-        transactions = HdfcPdfParser().parse(temp_file, password=password)
-    else:
-        transactions = HdfcParser().parse(temp_file)
+            return HdfcPdfParser().parse(temp_file, password=password)
+        return HdfcParser().parse(temp_file)
 
-    return [
-        enricher.enrich_transaction(t)
-        for t in transactions
-    ]
+    candidates = [bank, "SBI" if bank != "SBI" else "HDFC"]
+
+    for index, which in enumerate(candidates):
+        try:
+            transactions = _run(which)
+            return [
+                enricher.enrich_transaction(t)
+                for t in transactions
+            ], which
+        except ValueError as exc:
+            message = str(exc).lower()
+            looks_like_mismatch = (
+                "identify" in message
+                or "transaction table" in message
+                or "recognised" in message
+            )
+            if not looks_like_mismatch or index == len(candidates) - 1:
+                raise
+            # Fall through to the other bank on the next iteration.
+
+    raise ValueError("No parser could recognise this statement.")
 
 
 hero, dev_col = st.columns([3, 0.9], vertical_alignment="center")
@@ -137,11 +158,11 @@ if uploaded:
     try:
         if suffix == ".pdf":
             with st.spinner("Parsing PDF statement… this can take a few seconds"):
-                transactions = _parse_statement(
+                transactions, used_bank = _parse_statement(
                     uploaded.getvalue(), suffix, bank, pdf_password, _rules_signature()
                 )
         else:
-            transactions = _parse_statement(
+            transactions, used_bank = _parse_statement(
                 uploaded.getvalue(), suffix, bank, None, _rules_signature()
             )
 
@@ -178,7 +199,7 @@ if uploaded:
             start_date = min(t.date for t in transactions)
             end_date = max(t.date for t in transactions)
             st.success(
-                f"📄 {bank} Statement • "
+                f"📄 {used_bank} Statement • "
                 f"{len(transactions)} transactions • "
                 f"{start_date.strftime('%d %b %Y')} – "
                 f"{end_date.strftime('%d %b %Y')}"
