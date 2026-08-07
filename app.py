@@ -25,6 +25,8 @@ from kharchalens.parser import (
     HdfcPdfParser,
     PdfIncorrectPassword,
     PdfPasswordRequired,
+    SbiParser,
+    SbiPdfParser,
 )
 from kharchalens.utils.date_utils import format_date
 
@@ -52,6 +54,7 @@ def _rules_signature() -> str:
 def _parse_statement(
         file_bytes: bytes,
         suffix: str,
+        bank: str,
         password: str | None,
         rules_signature: str,
 ) -> list:
@@ -61,7 +64,12 @@ def _parse_statement(
         tmp.write(file_bytes)
         temp_file = tmp.name
 
-    if suffix == ".pdf":
+    if bank == "SBI":
+        if suffix == ".pdf":
+            transactions = SbiPdfParser().parse(temp_file, password=password)
+        else:
+            transactions = SbiParser().parse(temp_file)
+    elif suffix == ".pdf":
         transactions = HdfcPdfParser().parse(temp_file, password=password)
     else:
         transactions = HdfcParser().parse(temp_file)
@@ -101,7 +109,11 @@ if developer_mode and not _prev_dev:
     st.session_state["active_view_sel"] = "🛠 Developer"
 st.session_state["_dev_prev"] = developer_mode
 
-uploaded = st.file_uploader("Upload HDFC Statement", type=["xls", "xlsx", "pdf"])
+upload_col, bank_col = st.columns([3, 1])
+uploaded = upload_col.file_uploader(
+    "Upload Bank Statement", type=["xls", "xlsx", "pdf"], key="statement_upload"
+)
+bank = bank_col.selectbox("Bank", ["HDFC", "SBI"], key="bank_choice")
 
 if uploaded:
     suffix = Path(uploaded.name).suffix.lower() if Path(uploaded.name).suffix else ".xls"
@@ -126,11 +138,11 @@ if uploaded:
         if suffix == ".pdf":
             with st.spinner("Parsing PDF statement… this can take a few seconds"):
                 transactions = _parse_statement(
-                    uploaded.getvalue(), suffix, pdf_password, _rules_signature()
+                    uploaded.getvalue(), suffix, bank, pdf_password, _rules_signature()
                 )
         else:
             transactions = _parse_statement(
-                uploaded.getvalue(), suffix, None, _rules_signature()
+                uploaded.getvalue(), suffix, bank, None, _rules_signature()
             )
 
         summary = build_summary(transactions)
@@ -166,7 +178,7 @@ if uploaded:
             start_date = min(t.date for t in transactions)
             end_date = max(t.date for t in transactions)
             st.success(
-                "📄 HDFC Statement • "
+                f"📄 {bank} Statement • "
                 f"{len(transactions)} transactions • "
                 f"{start_date.strftime('%d %b %Y')} – "
                 f"{end_date.strftime('%d %b %Y')}"
