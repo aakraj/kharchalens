@@ -110,6 +110,9 @@ rules:
 - merchant: Box8
   contains:
   - BOX8
+- merchant: Restaurant
+  contains:
+    - FOOD
 # ---- E-commerce & Retail ----
 - merchant: Amazon
   contains:
@@ -321,9 +324,6 @@ rules:
 - merchant: Rapido
   contains:
   - RAPIDO
-- merchant: Meru
-  contains:
-  - MERU
 - merchant: BookMyShow
   contains:
   - BOOKMYSHOW
