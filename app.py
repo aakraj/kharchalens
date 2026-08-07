@@ -148,16 +148,14 @@ if uploaded:
         _current = st.session_state.get("active_view_sel", "📊 Dashboard")
         if _current not in view_options:
             _current = "📊 Dashboard"
-        _choice = st.segmented_control(
+        st.session_state["active_view_sel"] = _current
+        _choice = st.radio(
             "View",
             options=view_options,
             key="active_view_sel",
-            default="📊 Dashboard",
             label_visibility="collapsed",
-            selection_mode="single",
+            horizontal=True,
         )
-        if _choice not in _label_to_view:
-            _choice = _current
         view = _label_to_view.get(_choice, "dashboard")
         if view == "developer" and not developer_mode:
             view = "dashboard"
