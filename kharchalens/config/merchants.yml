@@ -15,10 +15,6 @@ rules:
 - merchant: Airbnb
   contains:
   - AIRBNB
-- merchant: Playo/Sports
-  contains:
-  - TECHMASH
-  - PLAYO
 - merchant: Airtel Xstream
   contains:
   - XSTREAM
@@ -86,6 +82,7 @@ rules:
   - BIGBAZAAR
 - merchant: BigBasket
   contains:
+  - BBNOW
   - BIGBASKET
 - merchant: Bikanervala
   contains:
@@ -259,10 +256,12 @@ rules:
   - HDFC ERGO
 - merchant: Hypermarket
   contains:
-  - HYPERMARKET
+  - ALL MARKET
+  - FRESH WORLD
   - HYPER MART
-  - SUPER MARKET
+  - HYPERMARKET
   - MEGA MART
+  - SUPER MARKET
 - merchant: ICICI Card
   contains:
   - ICICI CARD
@@ -336,6 +335,9 @@ rules:
   - REPAYMENT
   - FORECLOSURE
   - NACH MANDATE
+- merchant: Machaxi Sports
+  contains:
+  - SEPTATHLON SERVICES
 - merchant: Mahindra Finance
   contains:
   - MAHINDRA FINANCE
@@ -356,6 +358,9 @@ rules:
 - merchant: McDonald's
   contains:
   - MCDONALD
+- merchant: Medical
+  contains:
+  - CLINIC
 - merchant: MedPlus
   contains:
   - MEDPLUS
@@ -430,6 +435,10 @@ rules:
 - merchant: Pizza Hut
   contains:
   - PIZZA HUT
+- merchant: Playo/Sports
+  contains:
+  - TECHMASH
+  - PLAYO
 - merchant: PN Gadgil Jewellers
   contains:
   - P N GADGIL
