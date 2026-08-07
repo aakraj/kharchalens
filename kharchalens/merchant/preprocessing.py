@@ -25,21 +25,38 @@ class NarrationPreprocessor:
     _CARD_PATTERN = re.compile(r"\b\d+X+\d+\b", re.IGNORECASE)
 
     _UPI_PREFIX = re.compile(r"^UPI\s*-\s*", re.IGNORECASE)
+    _POS_PREFIX = re.compile(r"^POS\s+", re.IGNORECASE)
 
     @classmethod
     def extract_keyword(cls, narration: str) -> str:
         """Best-effort default keyword for a raw bank narration.
 
-        For UPI payouts ("UPI-ALL MARKET-ALLMARKET@HDFCBANK-...") the payee's
-        name is the segment right after the ``UPI-`` prefix, so we return just
-        that; otherwise the full narration is returned.
+        - ``UPI-ALL MARKET-...`` → the payee's name right after ``UPI-``.
+        - ``POS 512967XXXXXX8643 GK ENTERPRISES V`` → drop the ``POS`` prefix
+          and the masked card number, keep the merchant name.
+        - Anything else → the full narration.
         """
+        def _is_card_number(token: str) -> bool:
+            return bool(cls._CARD_PATTERN.match(token)) or (
+                token.isdigit() and len(token) >= 12
+            )
+
         text = narration.strip()
+
         match = cls._UPI_PREFIX.match(text)
         if match:
             segment = text[match.end():].split("-", 1)[0].strip()
             if segment:
                 return segment
+
+        match = cls._POS_PREFIX.match(text)
+        if match:
+            tokens = text[match.end():].split()
+            if tokens and _is_card_number(tokens[0]):
+                tokens = tokens[1:]
+            if tokens:
+                return " ".join(tokens).strip()
+
         return text
 
     @classmethod

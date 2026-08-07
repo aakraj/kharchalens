@@ -68,7 +68,25 @@ def test_extract_keyword_non_upi_keeps_full():
         "POS 512967XXXXXX8643 MAKE MY TRIP"
     )
 
-    assert keyword == "POS 512967XXXXXX8643 MAKE MY TRIP"
+    assert keyword == "MAKE MY TRIP"
+
+
+def test_extract_keyword_pos_drops_masked_card():
+
+    keyword = NarrationPreprocessor.extract_keyword(
+        "POS 512967XXXXXX8643 GK ENTERPRISES V"
+    )
+
+    assert keyword == "GK ENTERPRISES V"
+
+
+def test_extract_keyword_pos_no_card_keeps_rest():
+
+    keyword = NarrationPreprocessor.extract_keyword(
+        "POS R K ENTERPRISES"
+    )
+
+    assert keyword == "R K ENTERPRISES"
 
 
 def test_extract_keyword_upi_empty_segment_falls_back():
