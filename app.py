@@ -152,6 +152,7 @@ if uploaded:
             "View",
             options=view_options,
             key="active_view_sel",
+            default="📊 Dashboard",
             label_visibility="collapsed",
             selection_mode="single",
         )
