@@ -108,6 +108,40 @@ def test_sbi_pdf_multi_line_narration(monkeypatch):
     assert transactions[0].narration == "UPI CONTINUATION"
 
 
+def _particulars_header() -> list[tuple[float, float, float, str]]:
+    # SBI statements also ship with this classic layout.
+    return [
+        _word(30, 40, "Date"),
+        _word(100, 150, "Particulars"),
+        _word(300, 320, "Withdrawal"),
+        _word(360, 380, "Deposit"),
+        _word(420, 440, "Balance"),
+    ]
+
+
+def test_sbi_pdf_particulars_layout(monkeypatch):
+    transactions = _parse(
+        monkeypatch,
+        [
+            _particulars_header(),
+            [
+                _word(0, 25, "05/01/2026"),
+                _word(100, 125, "NEFT"),
+                _word(130, 145, "CR"),
+                _word(370, 390, "2,000.00"),
+                _word(430, 450, "2,398.82"),
+            ],
+        ],
+    )
+
+    assert len(transactions) == 1
+    assert transactions[0].date == date(2026, 1, 5)
+    assert transactions[0].transaction_type == TransactionType.CREDIT
+    assert transactions[0].amount == Decimal("2000.00")
+    assert transactions[0].balance == Decimal("2398.82")
+    assert transactions[0].narration == "NEFT CR"
+
+
 def test_sbi_pdf_invalid_layout(monkeypatch):
     parser = SbiPdfParser()
     monkeypatch.setattr(

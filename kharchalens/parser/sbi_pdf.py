@@ -19,15 +19,9 @@ _DATE_PATTERN = re.compile(r"^\d{1,2}/\d{1,2}/\d{2,4}$")
 
 _NUMERIC_PATTERN = re.compile(r"^₹?[\d,]+(?:\.\d+)?$")
 
-_TRIGGER_WORDS = {
-    "value_date": "VALUE",
-    "post_date": "POST",
-    "details": "DETAILS",
-    "ref": "REF",
-    "debit": "DEBIT",
-    "credit": "CREDIT",
-    "balance": "BALANCE",
-}
+_DATE_COLUMNS = frozenset({"value_date", "post_date"})
+
+_AMOUNT_COLUMNS = frozenset({"debit", "credit"})
 
 _FURNITURE_MARKERS = (
     "STATE BANK OF INDIA",
@@ -101,27 +95,19 @@ class SbiPdfParser(SbiStatementParser):
             lines: list[list[tuple[float, float, float, str]]],
     ) -> dict[str, tuple[float, float]] | None:
         for line in lines:
-            texts = {word[3].upper() for word in line}
+            first: dict[str, tuple[float, float]] = {}
 
-            if not (
-                "VALUE" in texts
-                and "POST" in texts
-                and "DETAILS" in texts
-            ):
-                continue
+            for word in line:
+                canonical = self._column_for_header(word[3])
+                if canonical and canonical not in first:
+                    first[canonical] = (word[0], word[1])
 
-            centers: dict[str, tuple[float, float]] = {}
+            has_date = bool(set(first) & _DATE_COLUMNS)
+            has_details = "details" in first
+            has_amount = bool(set(first) & _AMOUNT_COLUMNS)
 
-            for key, trigger in _TRIGGER_WORDS.items():
-                for word in line:
-                    if word[3].upper().startswith(trigger):
-                        centers[key] = (word[0], word[1])
-                        break
-
-            if len(centers) != len(_TRIGGER_WORDS):
-                continue
-
-            return centers
+            if has_date and has_details and has_amount:
+                return first
 
         return None
 
@@ -130,7 +116,14 @@ class SbiPdfParser(SbiStatementParser):
             line: list[tuple[float, float, float, str]],
     ) -> bool:
         texts = {word[3].upper() for word in line}
-        return "VALUE" in texts and "DETAILS" in texts and "DEBIT" in texts
+        has_date_word = any(
+            token in texts for token in ("DATE", "POST", "VALUE")
+        )
+        has_details_word = any(
+            token in texts
+            for token in ("DETAILS", "NARRATION", "PARTICULARS", "DESCRIPTION")
+        )
+        return has_date_word and has_details_word
 
     @staticmethod
     def _skip_furniture(
