@@ -275,42 +275,35 @@ if uploaded:
                     cols[1].write(item.transactions)
                     cols[2].write(item.narration)
 
-                    _merchant_key = f"merchant_name_{item.narration}"
-                    _sel_key = f"merchant_sel_{item.narration}"
-
-                    typed = cols[3].text_input(
+                    merchant_sel = cols[3].selectbox(
                         "Merchant",
-                        key=_merchant_key,
-                        placeholder="Search merchant or type a new name…",
+                        ["✍️ Add new merchant…"] + merchant_options,
+                        key=f"merchant_sel_{item.narration}",
+                        index=None,
+                        placeholder="Type to search…",
                         label_visibility="collapsed",
                     )
-
-                    picked = None
-                    if (typed or "").strip():
-                        matches = [
-                            o for o in merchant_options if typed.strip().lower() in o.lower()
-                        ]
-                        picked = cols[3].selectbox(
-                            "Merchant suggestions",
-                            ["✍️ Add new merchant…"] + matches,
-                            key=_sel_key,
-                            index=None,
-                            placeholder="Suggestions",
+                    if merchant_sel == "✍️ Add new merchant…":
+                        merchant = cols[3].text_input(
+                            "New merchant name",
+                            key=f"merchant_new_{item.narration}",
+                            placeholder="Type merchant name…",
                             label_visibility="collapsed",
                         )
-
-                    text_val = (typed or "").strip()
-                    if picked not in (None, "✍️ Add new merchant…"):
-                        merchant = picked
-                        if merchant.endswith(_local_suffix):
-                            merchant = merchant.rstrip()[: -len(_local_suffix)]
-                        local_default = merchant in local_merchants
-                    else:
-                        merchant = text_val
                         local_default = st.session_state.get(
                             f"local_{item.narration}", True
                         )
-                    st.session_state[f"local_{item.narration}"] = local_default
+                    elif merchant_sel is None:
+                        merchant = ""
+                        local_default = st.session_state.get(
+                            f"local_{item.narration}", True
+                        )
+                    else:
+                        merchant = merchant_sel
+                        if merchant.endswith(_local_suffix):
+                            merchant = merchant.rstrip()[: -len(_local_suffix)]
+                        local_default = merchant in local_merchants
+                        st.session_state[f"local_{item.narration}"] = local_default
 
                     keyword = cols[4].text_input("Keyword", value=NarrationPreprocessor.extract_keyword(item.narration), key=f"keyword_{item.narration}", label_visibility="collapsed")
                     local = cols[5].toggle("Save locally", value=local_default, key=f"local_{item.narration}", label_visibility="collapsed")
