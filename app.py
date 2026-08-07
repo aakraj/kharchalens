@@ -258,7 +258,7 @@ if uploaded:
                 merchant_options = [
                     f"{m}{_local_suffix}" if m in local_merchants else m
                     for m in known_merchants
-                ] + ["✍️ Add new merchant…"]
+                ]
                 header = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
 
                 header[0].markdown("**Spend**")
@@ -275,17 +275,26 @@ if uploaded:
                     cols[1].write(item.transactions)
                     cols[2].write(item.narration)
 
+                    filter_value = cols[3].text_input(
+                        "Search",
+                        key=f"merchant_filter_{item.narration}",
+                        placeholder="Search merchant…",
+                        label_visibility="collapsed",
+                    )
+                    query = (filter_value or "").strip().lower()
+                    matches = [o for o in merchant_options if query in o.lower()]
                     merchant_sel = cols[3].selectbox(
                         "Merchant",
-                        merchant_options,
+                        ["✍️ Add new merchant…"] + matches,
                         key=f"merchant_sel_{item.narration}",
                         index=None,
-                        placeholder="Select a merchant…",
+                        placeholder="Pick or type below…",
                         label_visibility="collapsed",
                     )
                     if merchant_sel == "✍️ Add new merchant…":
                         merchant = cols[3].text_input(
                             "New merchant name",
+                            value=filter_value or "",
                             key=f"merchant_new_{item.narration}",
                             placeholder="Type merchant name…",
                             label_visibility="collapsed",
