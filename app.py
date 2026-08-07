@@ -251,7 +251,7 @@ if uploaded:
                 )
                 st.markdown("### 💸 Top Unknown Spending")
                 known_merchants = MerchantRuleStore.merchant_names()
-                merchant_options = ["Select merchant…"] + known_merchants + ["✍️ Add new merchant…"]
+                merchant_options = known_merchants + ["✍️ Add new merchant…"]
                 header = st.columns([1, 0.8, 4.2, 2.2, 2.5, 1, 0.8])
 
                 header[0].markdown("**Spend**")
@@ -272,6 +272,8 @@ if uploaded:
                         "Merchant",
                         merchant_options,
                         key=f"merchant_sel_{item.narration}",
+                        index=None,
+                        placeholder="Select a merchant…",
                         label_visibility="collapsed",
                     )
                     if merchant_sel == "✍️ Add new merchant…":
@@ -281,7 +283,7 @@ if uploaded:
                             placeholder="Type merchant name…",
                             label_visibility="collapsed",
                         )
-                    elif merchant_sel == "Select merchant…":
+                    elif merchant_sel is None:
                         merchant = ""
                     else:
                         merchant = merchant_sel
