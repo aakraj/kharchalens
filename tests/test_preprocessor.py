@@ -42,3 +42,39 @@ def test_remove_neft():
     )
 
     assert result == "PPF"
+
+
+def test_extract_keyword_upi():
+
+    keyword = NarrationPreprocessor.extract_keyword(
+        "UPI-ALL MARKET-ALLMARKET.96103871@HDFCBANK-HDFC0MERUPI-104083396687-UPI"
+    )
+
+    assert keyword == "ALL MARKET"
+
+
+def test_extract_keyword_upi_with_spaces():
+
+    keyword = NarrationPreprocessor.extract_keyword(
+        "UPI - SWIGGY-PAYTM-9123456789@YBL"
+    )
+
+    assert keyword == "SWIGGY"
+
+
+def test_extract_keyword_non_upi_keeps_full():
+
+    keyword = NarrationPreprocessor.extract_keyword(
+        "POS 512967XXXXXX8643 MAKE MY TRIP"
+    )
+
+    assert keyword == "POS 512967XXXXXX8643 MAKE MY TRIP"
+
+
+def test_extract_keyword_upi_empty_segment_falls_back():
+
+    keyword = NarrationPreprocessor.extract_keyword(
+        "UPI-"
+    )
+
+    assert keyword == "UPI-"

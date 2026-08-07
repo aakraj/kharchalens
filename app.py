@@ -18,6 +18,7 @@ from kharchalens.dashboard import (
 )
 from kharchalens.dashboard.summary import format_inr
 from kharchalens.enrichment import TransactionEnricher
+from kharchalens.merchant.preprocessing import NarrationPreprocessor
 from kharchalens.merchant.rule_store import MerchantRuleStore
 from kharchalens.parser import (
     HdfcParser,
@@ -304,7 +305,7 @@ if uploaded:
                         local_default = merchant in local_merchants
                         st.session_state[f"local_{item.narration}"] = local_default
 
-                    keyword = cols[4].text_input("Keyword", value=item.narration, key=f"keyword_{item.narration}", label_visibility="collapsed")
+                    keyword = cols[4].text_input("Keyword", value=NarrationPreprocessor.extract_keyword(item.narration), key=f"keyword_{item.narration}", label_visibility="collapsed")
                     local = cols[5].toggle("Save locally", value=local_default, key=f"local_{item.narration}", label_visibility="collapsed")
 
                     if cols[6].button("➕ Add", key=f"save_{item.narration}"):
