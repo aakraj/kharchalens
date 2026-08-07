@@ -275,26 +275,17 @@ if uploaded:
                     cols[1].write(item.transactions)
                     cols[2].write(item.narration)
 
-                    filter_value = cols[3].text_input(
-                        "Search",
-                        key=f"merchant_filter_{item.narration}",
-                        placeholder="Search merchant…",
-                        label_visibility="collapsed",
-                    )
-                    query = (filter_value or "").strip().lower()
-                    matches = [o for o in merchant_options if query in o.lower()]
                     merchant_sel = cols[3].selectbox(
                         "Merchant",
-                        ["✍️ Add new merchant…"] + matches,
+                        ["✍️ Add new merchant…"] + merchant_options,
                         key=f"merchant_sel_{item.narration}",
                         index=None,
-                        placeholder="Pick or type below…",
+                        placeholder="Type to search or pick…",
                         label_visibility="collapsed",
                     )
                     if merchant_sel == "✍️ Add new merchant…":
                         merchant = cols[3].text_input(
                             "New merchant name",
-                            value=filter_value or "",
                             key=f"merchant_new_{item.narration}",
                             placeholder="Type merchant name…",
                             label_visibility="collapsed",
