@@ -115,24 +115,42 @@ class SbiPdfParser(SbiStatementParser):
     def _suspected_header(
             lines: list[list[tuple[float, float, float, str]]],
     ) -> str | None:
-        """Return the first line that looks like a column-header row.
+        """Return the first few lines that look like a transaction-column header.
 
-        Only column labels are surfaced here (never transaction content), so
-        the hint in error messages stays privacy-safe.
+        Only rows carrying a narrative label (Particulars/Narration/Details/
+        Transaction) are surfaced, so the hint stays privacy-safe and skips
+        section-total rows like ``Debits( ) Credits( )``.
         """
-        keywords = (
-            "DATE", "VALUE", "PARTICULARS", "NARRATION", "DETAIL", "REF",
-            "DEBIT", "DEPOSIT", "CREDIT", "WITHDRAWAL", "BALANCE", "CHQ",
-            "AMOUNT", "TXNDATE", "TXN DATE", "TRANSACTION",
+        details_tokens = (
+            "PARTICULARS", "NARRATION", "DETAILS", "DESCRIPTION",
+            "TRANSACTION", "REMARK",
+        )
+        header_tokens = (
+            "DATE", "REF", "DEBIT", "DEPOSIT", "CREDIT", "WITHDRAWAL",
+            "BALANCE", "CHQ", "AMOUNT",
         )
 
-        for line in lines:
-            texts = " ".join(word[3] for word in line).upper()
-            hits = sum(1 for keyword in keywords if keyword in texts)
-            if hits >= 2:
-                return " ".join(word[3] for word in line)
+        found: list[str] = []
 
-        return None
+        for line in lines:
+            words = [(word[3], round(word[0])) for word in line]
+            text = " ".join(word for word, _ in words).upper()
+
+            has_details = any(token in text for token in details_tokens)
+            if not has_details:
+                continue
+
+            hits = sum(
+                1 for token in header_tokens if token in text
+            )
+            if hits >= 1:
+                found.append(
+                    " ".join(f"{word}@{x}" for word, x in words)
+                )
+            if len(found) >= 3:
+                break
+
+        return "  |  ".join(found) or None
 
     @staticmethod
     def _is_header_line(
