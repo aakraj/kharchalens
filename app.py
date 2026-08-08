@@ -56,15 +56,13 @@ def _rules_signature() -> str:
 def _parse_statement(
         file_bytes: bytes,
         suffix: str,
-        bank: str,
         password: str | None,
         rules_signature: str,
 ) -> tuple[list, str]:
     """Parse and enrich a statement once; cached so reruns skip the slow work.
 
-    The preferred parser is chosen by the ``bank`` the user picked. If that
-    bank cannot even recognise the statement's table (wrong bank chosen), the
-    other bank is tried automatically. Returns (transactions, bank_used).
+    Bank parsers are tried in turn and the first one that can recognise the
+    statement's table wins. Returns (transactions, bank_used).
     """
     enricher = TransactionEnricher()
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -80,9 +78,7 @@ def _parse_statement(
             return HdfcPdfParser().parse(temp_file, password=password)
         return HdfcParser().parse(temp_file, password=password)
 
-    candidates = [bank, "SBI" if bank != "SBI" else "HDFC"]
-
-    for index, which in enumerate(candidates):
+    for index, which in enumerate(("SBI", "HDFC")):
         try:
             transactions = _run(which)
             return [
@@ -96,7 +92,7 @@ def _parse_statement(
                 or "transaction table" in message
                 or "recognised" in message
             )
-            if not looks_like_mismatch or index == len(candidates) - 1:
+            if not looks_like_mismatch or index == 1:
                 raise
             # Fall through to the other bank on the next iteration.
 
@@ -132,11 +128,13 @@ if developer_mode and not _prev_dev:
     st.session_state["active_view_sel"] = "🛠 Developer"
 st.session_state["_dev_prev"] = developer_mode
 
-upload_col, bank_col = st.columns([3, 1])
-uploaded = upload_col.file_uploader(
-    "Upload Bank Statement", type=["xls", "xlsx", "pdf"], key="statement_upload"
+uploaded = st.file_uploader(
+    "Upload Bank Statement",
+    type=["xls", "xlsx", "pdf"],
+    key="statement_upload",
 )
-bank = bank_col.selectbox("Bank", ["HDFC", "SBI"], key="bank_choice")
+if uploaded is None:
+    st.caption("Prefer Excel (.xls/.xlsx) — PDFs may give unexpected results.")
 
 if uploaded:
     suffix = Path(uploaded.name).suffix.lower() if Path(uploaded.name).suffix else ".xls"
@@ -149,9 +147,7 @@ if uploaded:
         width=280,
         help=(
             "Only needed for password-protected statements (PDFs or "
-            "encrypted Excel files). For HDFC PDFs this is the password "
-            "you set when downloading the e-statement (often your "
-            "first-name initial + the last 4 digits of your customer ID)."
+            "encrypted Excel files). The bank is detected automatically."
         ),
     ) or None
 
@@ -162,7 +158,6 @@ if uploaded:
             transactions, used_bank = _parse_statement(
                 uploaded.getvalue(),
                 suffix,
-                bank,
                 password,
                 _rules_signature(),
             )

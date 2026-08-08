@@ -264,14 +264,13 @@ def render_footer() -> None:
         """
         <div class="app-footer">
             <div class="footer-links">
-                <a href="https://github.com" target="_blank">GitHub</a>
-                <a href="#" target="_blank">Documentation</a>
-                <a href="#" target="_blank">Report an issue</a>
-                <a href="#" target="_blank">Privacy</a>
+                <a href="https://github.com/aakraj/kharchalens" target="_blank">GitHub</a>
+                <a href="https://github.com/aakraj/kharchalens#readme" target="_blank">Documentation</a>
+                <a href="https://github.com/aakraj/kharchalens/issues/new" target="_blank">Report an issue</a>
             </div>
             <div class="footer-note">
                 KharchaLens · 100% offline — your bank statements never leave this device.<br>
-                Built with Streamlit. Not affiliated with or endorsed by HDFC Bank.
+                Built with Streamlit. Not affiliated with or endorsed by HDFC or SBI Bank.
             </div>
         </div>
         """,

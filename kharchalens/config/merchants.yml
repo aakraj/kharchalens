@@ -57,6 +57,9 @@ rules:
 - merchant: Apple Store
   contains:
   - APPLE STORE
+- merchant: ATM Maintenance
+  contains:
+  - ATMCARD  AMC
 - merchant: Axis Card
   contains:
   - AXIS CARD
@@ -621,3 +624,15 @@ rules:
 - merchant: Zudio
   contains:
   - ZUDIO
+- merchant: Dividend Credit
+  contains:
+  - DIVIDEND
+  - ACHCr
+  - NACH
+  - CEMTEX
+  - CEMTEX DEP
+- merchant: Interest Credit
+  contains:
+  - INTEREST CREDIT
+  - INTEREST
+  - INTERES T
