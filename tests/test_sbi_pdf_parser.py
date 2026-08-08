@@ -154,3 +154,56 @@ def test_sbi_pdf_invalid_layout(monkeypatch):
         assert False, "expected a ValueError"
     except ValueError:
         pass
+
+
+def test_sbi_pdf_no_header_geometry(monkeypatch):
+    # A real SBI e-statement with NO column-header row: narration sits on the
+    # line ABOVE each date/amount line, and amounts are right-aligned into
+    # debit (~346), credit (~435) and balance (~512) bands.
+    transactions = _parse(
+        monkeypatch,
+        [
+            # narration lines (no date) precede their transaction's date line
+            [
+                _word(138, 150, "CEMTEX"),
+                _word(174, 190, "DEP"),
+                _word(197, 215, "ACHCr"),
+            ],
+            [
+                _word(27, 40, "07/05/2025"),
+                _word(82, 95, "07/05/2025"),
+                _word(340, 470, "-"),
+                _word(420, 520, "-"),
+                _word(435, 442, "500.00"),
+                _word(512, 530, "76,075.96"),
+            ],
+            [
+                _word(138, 150, "UPI"),
+                _word(160, 175, "DR"),
+                _word(180, 190, "ZERODHA"),
+            ],
+            [
+                _word(27, 40, "12/05/2025"),
+                _word(82, 95, "12/05/2025"),
+                _word(304, 320, "-"),
+                _word(346, 352, "2,000.00"),
+                _word(446, 460, "-"),
+                _word(512, 513, "73,075.96"),
+            ],
+        ],
+    )
+
+    assert len(transactions) == 2
+
+    first, second = transactions[0], transactions[1]
+    assert first.date == date(2025, 5, 7)
+    assert first.transaction_type == TransactionType.CREDIT
+    assert first.amount == Decimal("500.00")
+    assert first.balance == Decimal("76075.96")
+    assert first.narration == "CEMTEX DEP ACHCr"
+
+    assert second.date == date(2025, 5, 12)
+    assert second.transaction_type == TransactionType.DEBIT
+    assert second.amount == Decimal("2000.00")
+    assert second.balance == Decimal("73075.96")
+    assert second.narration == "UPI DR ZERODHA"
