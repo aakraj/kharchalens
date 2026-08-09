@@ -1,7 +1,7 @@
 from datetime import date
 from decimal import Decimal
 
-from kharchalens.dashboard.summary import build_summary
+from kharchalens.dashboard.summary import build_summary, format_inr
 from kharchalens.models import Transaction, TransactionType
 
 
@@ -12,6 +12,14 @@ def _txn(day: int, amount: str, type_: TransactionType) -> Transaction:
         amount=Decimal(amount),
         transaction_type=type_,
     )
+
+
+def test_format_inr():
+    assert format_inr(Decimal(1250)) == "₹1,250"
+    assert format_inr(Decimal(125000)) == "₹1.25 L"
+    assert format_inr(Decimal(5200000)) == "₹52.00 L"
+    assert format_inr(Decimal(145000000)) == "₹14.50 Cr"
+    assert format_inr(Decimal(-1250)) == "₹-1,250"
 
 
 def test_average_monthly_spend_single_month():

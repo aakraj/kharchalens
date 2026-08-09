@@ -31,10 +31,9 @@ Rules are YAML `rules:` lists of `{merchant, contains[]}`. `MerchantResolver` lo
 
 ## Testing quirks
 
-- `tests/test_hdfc_parser.py` is skipped — it needs a sanitized real HDFC `.xls` fixture that does not exist yet. The PDF parser is unit-tested with synthetic word-coordinate rows (monkeypatched `_extract_word_rows`) plus end-to-end tests against the committed reportlab-generated `tests/fixtures/hdfc_sample.pdf` (2 pages, multi-line narration, repeated header). `tests/fixtures/hdfc_sample_encrypted.pdf` is that same statement encrypted with the password `secret123` (via throwaway pypdf — not a project dep) and drives the password tests: no password → `PdfPasswordRequired`, wrong → `PdfIncorrectPassword`, correct → 7 transactions. Both fixtures are synthetic — a real sanitized HDFC `.pdf` should eventually replace them.
+- `tests/test_hdfc_parser.py` exercises `HdfcParser` end-to-end with throwaway `.xlsx` workbooks written to `tmp_path` (no real fixture needed — `openpyxl` reads both `.xls`/`.xlsx` via content sniffing). The PDF parser is unit-tested with synthetic word-coordinate rows (monkeypatched `_extract_word_rows`) plus end-to-end tests against the committed reportlab-generated `tests/fixtures/hdfc_sample.pdf` (2 pages, multi-line narration, repeated header). `tests/fixtures/hdfc_sample_encrypted.pdf` is that same statement encrypted with the password `secret123` (via throwaway pypdf — not a project dep) and drives the password tests: no password → `PdfPasswordRequired`, wrong → `PdfIncorrectPassword`, correct → 7 transactions. Both fixtures are synthetic — a real sanitized HDFC `.pdf` should eventually replace them.
 - `tests/test_merchant_resolver.py` asserts against the real committed `merchants.yml` (Zomato/Swiggy/Amazon/Unknown) — edit that YAML and these tests change.
 - `tests/test_rule_store.py` isolates writes with `monkeypatch.chdir(tmp_path)`.
-- **Currently failing:** `tests/test_unknown_merchants.py` fails at runtime — `continuex` typo at `kharchalens/analytics/unknown_merchants.py:25`. 32 tests pass, 1 skipped otherwise.
 
 ## Style
 

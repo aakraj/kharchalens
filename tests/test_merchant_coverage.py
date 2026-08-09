@@ -40,3 +40,12 @@ def test_merchant_coverage():
     assert coverage.unknown == 2
     assert coverage.total == 3
     assert round(coverage.coverage, 2) == 33.33
+
+
+def test_merchant_coverage_empty():
+    coverage = merchant_coverage([])
+
+    assert coverage.recognized == 0
+    assert coverage.unknown == 0
+    assert coverage.total == 0
+    assert coverage.coverage == 0.0
