@@ -43,6 +43,7 @@ Everything runs **entirely on your computer** — no account, no cloud, no track
 - **📄 Transactions** — browse every dated transaction (narration, merchant, amount, balance).
 - **🛠 Developer Mode** — merchant-coverage metrics plus a review screen for unknown spending.
 - **🔒 Password support** — password-protected PDFs and encrypted Excel files.
+- **🚀 Sample statement** — click **Try it with a sample statement** on the landing screen to explore a realistic three-month statement without uploading anything.
 
 **Recognize your own merchants.** Unrecognized entries appear as **🟡 Needs Review**. Flip on Developer Mode, pick **Add new merchant…**, type a keyword and merchant name — choose **Local** (only you, saved to `local_data/merchants.local.yml`) or **Public** (saved to `kharchalens/config/merchants.yml`, benefits everyone). Matching transactions are recognized on the next import.
 
@@ -90,6 +91,8 @@ Open the URL Streamlit prints (usually `http://localhost:8501`).
 2. For a password‑protected PDF or encrypted Excel file, enter its password in the **Statement Password** field.
 3. Explore the Dashboard, Top Merchants, Categories, and Transactions.
 
+> No statement handy? Click **🚀 Try it with a sample statement** first — the bundled three-month sample (`kharchalens/sample_data/sample_statement.xlsx`) shows the full dashboard instantly and can be regenerated with `uv run python scripts/generate_sample_statement.py`.
+
 ---
 
 ## Your Merchant Rules
@@ -123,7 +126,9 @@ Rules are simple YAML. **Recognized** merchants ship with the app in `kharchalen
 │   ├── dashboard/                  # Charts, highlights, theme
 │   ├── models/                     # Transaction, kind and type enums
 │   ├── utils/                      # Shared date helpers
+│   ├── sample_data/                # Bundled sample statement for instant demo
 │   └── config/merchants.yml        # Built-in public merchant rules
+├── scripts/                        # Dev utilities (sample generator, etc.)
 ├── local_data/merchants.local.yml  # Your personal rules (gitignored)
 └── tests/
 ```

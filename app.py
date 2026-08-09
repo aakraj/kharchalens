@@ -155,13 +155,42 @@ uploaded = st.file_uploader(
     type=["xls", "xlsx", "pdf"],
     key="statement_upload",
 )
-if uploaded is None:
+
+_SAMPLE_PATH = (
+    Path(__file__).resolve().parent
+    / "kharchalens"
+    / "sample_data"
+    / "sample_statement.xlsx"
+)
+
+if uploaded is None and not st.session_state.get("use_sample", False):
     st.caption("Prefer Excel (.xls/.xlsx) — PDFs may give unexpected results.")
+    if st.button("🚀 Try it with a sample statement", type="primary"):
+        st.session_state["use_sample"] = True
+        st.rerun()
+elif uploaded is None and st.session_state.get("use_sample", False):
+    st.caption(
+        "🧪 Showing the bundled sample statement — upload your own "
+        "above to replace it."
+    )
 
-if uploaded:
-    suffix = Path(uploaded.name).suffix.lower() if Path(uploaded.name).suffix else ".xls"
+if uploaded is not None:
+    st.session_state["use_sample"] = False
 
-    needs_password = _needs_password(uploaded.getvalue(), suffix) or st.session_state.get(
+file_bytes = None
+file_name = None
+
+if uploaded is not None:
+    file_bytes = uploaded.getvalue()
+    file_name = uploaded.name
+elif st.session_state.get("use_sample", False):
+    file_bytes = _SAMPLE_PATH.read_bytes()
+    file_name = _SAMPLE_PATH.name
+
+if file_bytes is not None:
+    suffix = Path(file_name).suffix.lower() if Path(file_name).suffix else ".xls"
+
+    needs_password = _needs_password(file_bytes, suffix) or st.session_state.get(
         "force_statement_password", False
     )
     if needs_password:
@@ -185,7 +214,7 @@ if uploaded:
             "Parsing statement… this can take a few seconds"
         ):
             transactions, used_bank = _parse_statement(
-                uploaded.getvalue(),
+                file_bytes,
                 suffix,
                 password,
                 _rules_signature(),

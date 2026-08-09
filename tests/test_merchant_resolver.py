@@ -79,3 +79,36 @@ def test_credit_merchant_fires_when_type_unknown():
             )
             == "Dividend Credit"
     )
+
+
+def test_short_keyword_not_matched_across_words():
+    resolver = MerchantResolver()
+
+    assert (
+            resolver.resolve(
+                "MMT/IMPS/DEBIT/RENT/June 2026",
+            )
+            == "Unknown"
+    )
+
+
+def test_keyword_matched_as_contiguous_words():
+    resolver = MerchantResolver()
+
+    assert (
+            resolver.resolve(
+                "UPI/AIR INDIA/E8QRW3 0000012345",
+            )
+            == "Air India"
+    )
+
+
+def test_keyword_matched_when_glued_into_one_word():
+    resolver = MerchantResolver()
+
+    assert (
+            resolver.resolve(
+                "UPI/ACTFIBERNET/0000012345",
+            )
+            == "ACT Fibernet"
+    )

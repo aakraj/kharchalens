@@ -50,9 +50,32 @@ class MerchantResolver:
         )
 
     @staticmethod
-    def _compact(text: str) -> str:
+    def _phrase_matches(
+            words: list[str],
+            keyword_words: list[str],
+    ) -> bool:
+        """True when the keyword appears in the narration words.
 
-        return "".join(text.split())
+        Two forms are accepted:
+          * the keyword's words occur as a contiguous run (e.g.
+            ``Amazon Pay Later`` inside ``AMAZON PAY LATER ...``); and
+          * the keyword's compacted form is embedded inside a single
+            narration word (bank exports often glue tokens, e.g.
+            ``ACTFIBERNET``, ``AMZNPRIME``).
+
+        Matching is word-aware, so a short keyword like ``ITR`` can no
+        longer match across separate words (with the old all-in-one
+        compaction, ``DEBIT RENT`` contained ``ITR``).
+        """
+
+        run_length = len(keyword_words)
+
+        for index in range(len(words) - run_length + 1):
+            if words[index : index + run_length] == keyword_words:
+                return True
+
+        glued = "".join(keyword_words)
+        return bool(glued) and any(glued in word for word in words)
 
     def resolve(
             self,
@@ -61,21 +84,20 @@ class MerchantResolver:
     ) -> str:
 
         normalized = NarrationNormalizer.normalize(narration)
-        preprocessed = self._compact(
-            NarrationPreprocessor.preprocess(normalized)
-        )
+        words = NarrationPreprocessor.preprocess(normalized).split()
 
         for rule in self.rules:
 
             for keyword in rule.contains:
 
-                compact_keyword = self._compact(
-                    NarrationPreprocessor.preprocess(
-                        NarrationNormalizer.normalize(keyword)
-                    )
-                )
+                keyword_words = NarrationPreprocessor.preprocess(
+                    NarrationNormalizer.normalize(keyword)
+                ).split()
 
-                if compact_keyword and compact_keyword in preprocessed:
+                if not keyword_words:
+                    continue
+
+                if self._phrase_matches(words, keyword_words):
                     if (
                         transaction_type == TransactionType.DEBIT
                         and rule.merchant in self._CREDIT_ONLY_MERCHANTS

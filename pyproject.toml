@@ -43,6 +43,7 @@ target-version = "py314"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["DTZ011"]
+"scripts/*" = ["DTZ001"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
