@@ -98,7 +98,7 @@ def _parse_statement(
             return HdfcPdfParser().parse(temp_file, password=password)
         return HdfcParser().parse(temp_file, password=password)
 
-    banks = ("ICICI", "SBI", "HDFC")
+    banks = ("ICICI", "HDFC", "SBI")
 
     for index, which in enumerate(banks):
         try:
@@ -156,22 +156,30 @@ uploaded = st.file_uploader(
     key="statement_upload",
 )
 
-_SAMPLE_PATH = (
+_SAMPLE_DIR = (
     Path(__file__).resolve().parent
     / "kharchalens"
     / "sample_data"
-    / "sample_statement.xlsx"
 )
+_SAMPLE_FILES = {
+    "ICICI": _SAMPLE_DIR / "sample_statement_icici.xlsx",
+    "HDFC": _SAMPLE_DIR / "sample_statement_hdfc.xlsx",
+}
 
 if uploaded is None and not st.session_state.get("use_sample", False):
     st.caption("Prefer Excel (.xls/.xlsx) — PDFs may give unexpected results.")
+    sample_choice = st.selectbox(
+        "📄 Try a 12-month sample statement",
+        list(_SAMPLE_FILES),
+        help="Pick a bank format and explore the full dashboard instantly.",
+    )
     if st.button("🚀 Try it with a sample statement", type="primary"):
-        st.session_state["use_sample"] = True
+        st.session_state["use_sample"] = sample_choice
         st.rerun()
 elif uploaded is None and st.session_state.get("use_sample", False):
     st.caption(
-        "🧪 Showing the bundled sample statement — upload your own "
-        "above to replace it."
+        f"🧪 Showing the bundled {st.session_state['use_sample']} sample "
+        "statement — upload your own above to replace it."
     )
 
 if uploaded is not None:
@@ -183,9 +191,10 @@ file_name = None
 if uploaded is not None:
     file_bytes = uploaded.getvalue()
     file_name = uploaded.name
-elif st.session_state.get("use_sample", False):
-    file_bytes = _SAMPLE_PATH.read_bytes()
-    file_name = _SAMPLE_PATH.name
+elif st.session_state.get("use_sample", False) in _SAMPLE_FILES:
+    _sample_path = _SAMPLE_FILES[st.session_state["use_sample"]]
+    file_bytes = _sample_path.read_bytes()
+    file_name = _sample_path.name
 
 if file_bytes is not None:
     suffix = Path(file_name).suffix.lower() if Path(file_name).suffix else ".xls"
