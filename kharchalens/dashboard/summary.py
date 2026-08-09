@@ -28,16 +28,25 @@ def format_inr(amount: Decimal) -> str:
 def build_summary(transactions: list[Transaction]) -> dict[str, Decimal | int]:
     total_debit = Decimal(0)
     total_credit = Decimal(0)
+    months: set[str] = set()
 
     for transaction in transactions:
         if transaction.transaction_type == TransactionType.DEBIT:
             total_debit += transaction.amount
         else:
             total_credit += transaction.amount
+        months.add(transaction.date.strftime("%Y-%m"))
+
+    months_count = len(months)
+    average_monthly_spend = (
+        total_debit / months_count if months_count else Decimal(0)
+    )
 
     return {
         "total_debit": total_debit,
         "total_credit": total_credit,
         "net_cash_flow": total_credit - total_debit,
         "transaction_count": len(transactions),
+        "month_count": months_count,
+        "average_monthly_spend": average_monthly_spend,
     }

@@ -35,7 +35,7 @@ Everything runs **entirely on your computer** — no account, no cloud, no track
 
 ## Features
 
-- **📊 Spending Dashboard** — total credit, total debit, savings, and savings rate at a glance.
+- **📊 Spending Dashboard** — total credit, total debit, savings, savings rate, and average monthly spend at a glance.
 - **📅 Monthly Spending Trend** — see how your spending shifts month to month.
 - **🏪 Merchant Detection** — automatic recognition of common merchants (Zomato, Swiggy, Amazon, …) with ranked Top Merchants and a full spend / average / transaction summary.
 - **🧾 Category Breakdown** — Lifestyle Spending, Investment, Insurance, Cash Withdrawal, Transfers, and more.

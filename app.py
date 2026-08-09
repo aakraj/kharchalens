@@ -235,18 +235,26 @@ if uploaded:
                 "statement."
             )
 
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2, col3, col4, col5 = st.columns(5)
             total_credit = summary["total_credit"]
             total_debit = summary["total_debit"]
             col1.metric("💰 Total Credit", format_inr(total_credit))
             col2.metric("💸 Total Debit", format_inr(total_debit))
             col3.metric("📈 Saved", format_inr(summary["net_cash_flow"]))
+            col4.metric(
+                "📆 Avg Monthly Spend",
+                format_inr(summary["average_monthly_spend"]),
+                help=(
+                    f"Total debit across {summary['month_count']} month(s), "
+                    "divided by the number of months in this statement."
+                ),
+            )
 
             if total_credit > Decimal(0):
                 savings_rate = ((total_credit - total_debit)/ total_credit) * Decimal(100)
             else:
                 savings_rate = Decimal(0)
-            col4.metric("📊 Savings Rate",f"{savings_rate:.1f}%")
+            col5.metric("📊 Savings Rate",f"{savings_rate:.1f}%")
 
             #==========================================
             render_monthly_spending(transactions)
