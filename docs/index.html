@@ -43,6 +43,72 @@
   }
   </script>
 
+  <!-- FAQ structured data for rich results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Which banks can KharchaLens read statements from?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "KharchaLens parses e-statements from HDFC, SBI, and ICICI banks in .xls, .xlsx, or .pdf format. The bank is detected automatically from the file, so you do not need to select anything before uploading."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does KharchaLens upload my bank statement anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. KharchaLens is 100% offline — statements are parsed entirely on your own computer. There is no account, no cloud, and no tracking. Your statement files never leave your device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use KharchaLens with password-protected statements?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. KharchaLens supports password-protected PDFs and encrypted Excel workbooks. You enter the password in the Statement Password field inside the app, and it is only kept in memory for the parsing session."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What spending insights does the dashboard show?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You get total credit, total debit, savings and savings rate, average monthly spend, a monthly spending trend, automatic merchant detection (Zomato, Swiggy, Amazon and 100+ more), category breakdowns, and a searchable list of every transaction."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I add my own merchant rules?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Flip on Developer Mode in the app, open the review screen for unknown spending, and choose Add new merchant. Rules are saved as simple YAML — either to your own local_data/merchants.local.yml or to the shared kharchalens/config/merchants.yml."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if I don't have a bank statement handy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "KharchaLens bundles 12-month sample statements in both ICICI and HDFC format. Click Try it with a sample statement on the landing screen to explore the full dashboard without uploading anything."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which file format works best?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Excel (.xls or .xlsx) is recommended. PDF parsing handles common layouts, but unusual spreadsheet-generated PDFs or scanned image PDFs can give unexpected results, so Excel is the safest format."
+        }
+      }
+    ]
+  }
+  </script>
+
   <style>
     :root {
       --bg: #ffffff;
@@ -98,6 +164,15 @@
     table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
     th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid #e5e7eb; }
     th { background: var(--soft); }
+    details {
+      background: var(--soft); border-radius: 10px; margin: 0.6rem 0;
+      padding: 0.9rem 1.1rem;
+    }
+    details summary {
+      cursor: pointer; font-weight: 600; color: var(--ink);
+    }
+    details p { color: var(--muted); margin: 0.5rem 0 0; font-size: 0.95rem; }
+    .steps li { margin: 0.4rem 0; }
   </style>
 </head>
 <body>
@@ -173,6 +248,63 @@ uv run streamlit run app.py</code></pre>
       </tbody>
     </table>
     <p class="muted">⚠️ Prefer Excel (<code>.xls</code>/<code>.xlsx</code>) — PDFs can give unexpected results for unusual layouts.</p>
+
+    <h2>Features in detail</h2>
+    <p>
+      KharchaLens turns a raw bank statement into a clear picture of your finances. Once a
+      statement is parsed, the app works entirely on the resulting transactions — no data
+      ever leaves your machine.
+    </p>
+    <ul class="steps">
+      <li><strong>Spending Dashboard</strong> — total credit, total debit, savings, savings rate, and average monthly spend in a single glance.</li>
+      <li><strong>Monthly Spending Trend</strong> — a month-by-month view that shows exactly when spending rises or falls.</li>
+      <li><strong>Automatic Merchant Detection</strong> — Zomato, Swiggy, Amazon, Flipkart, Netflix, DMart and 100+ merchants are recognised from the narration text.</li>
+      <li><strong>Category Breakdown</strong> — spending grouped into lifestyle, investment, insurance, family transfers, and cash withdrawals.</li>
+      <li><strong>Top Merchants ranking</strong> — see where your money really goes, including a needs-review bucket for unrecognised entries.</li>
+      <li><strong>Searchable Transactions</strong> — browse every dated transaction by narration, merchant, type, or amount.</li>
+      <li><strong>Developer Mode</strong> — merchant-coverage metrics and a review screen for unknown spending.</li>
+      <li><strong>Your own merchant rules</strong> — add personal YAML rules for merchants KharchaLens doesn't know yet.</li>
+    </ul>
+
+    <h2>Why privacy-first offline analytics?</h2>
+    <p>
+      Bank statements contain sensitive data — account numbers, salaries, every merchant you
+      pay. Most expense trackers upload these files to cloud servers for processing.
+      KharchaLens is built to work the opposite way: the parser runs locally, the dashboard
+      renders locally, and your statements are never uploaded anywhere. If you want the
+      insights without handing your financial history to a third party, KharchaLens is the
+      tool for you.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <details>
+      <summary>Which banks can KharchaLens read statements from?</summary>
+      <p>HDFC, SBI, and ICICI e-statements in .xls, .xlsx, or .pdf. The bank is detected automatically from the file content.</p>
+    </details>
+    <details>
+      <summary>Does KharchaLens upload my bank statement anywhere?</summary>
+      <p>No. KharchaLens is 100% offline — statements are parsed entirely on your own computer. There is no account, no cloud, and no tracking.</p>
+    </details>
+    <details>
+      <summary>Can I use password-protected statements?</summary>
+      <p>Yes. Password-protected PDFs and encrypted Excel workbooks are supported. Enter the password in the Statement Password field; it stays in memory only for the parsing session.</p>
+    </details>
+    <details>
+      <summary>What spending insights does the dashboard show?</summary>
+      <p>Total credit, total debit, savings and savings rate, average monthly spend, a monthly spending trend, automatic merchant detection, category breakdowns, and a searchable list of every transaction.</p>
+    </details>
+    <details>
+      <summary>How do I add my own merchant rules?</summary>
+      <p>Flip on Developer Mode, open the review screen for unknown spending, and choose Add new merchant. Rules are saved as YAML — either to your personal <code>local_data/merchants.local.yml</code> or the shared <code>kharchalens/config/merchants.yml</code>.</p>
+    </details>
+    <details>
+      <summary>What if I don't have a statement handy?</summary>
+      <p>KharchaLens bundles 12-month sample statements in ICICI and HDFC format. Click Try it with a sample statement to explore the full dashboard without uploading anything.</p>
+    </details>
+    <details>
+      <summary>Which file format works best?</summary>
+      <p>Excel (<code>.xls</code> or <code>.xlsx</code>) is recommended. PDF parsing handles common layouts, but unusual or scanned PDFs can give unexpected results.</p>
+    </details>
 
     <footer>
       <p>
