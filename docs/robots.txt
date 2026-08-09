@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aakraj.github.io/kharchalens/sitemap.xml

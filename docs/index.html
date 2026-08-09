@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KharchaLens — Privacy-first expense analyzer for Indian bank statements</title>
+  <meta name="description" content="KharchaLens is a privacy-first, offline expense tracker for Indian bank statements. Upload HDFC, SBI, or ICICI statements in .xls, .xlsx, or .pdf and get spending insights, merchant detection, and category breakdowns — 100% on your own computer.">
+  <meta name="keywords" content="expense tracker, bank statement parser, HDFC, SBI, ICICI, Indian bank, personal finance, privacy-first, offline, Streamlit, spending analysis, UPI, money management">
+  <meta name="author" content="aakraj">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://aakraj.github.io/kharchalens/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aakraj.github.io/kharchalens/">
+  <meta property="og:title" content="KharchaLens — Privacy-first expense analyzer for Indian bank statements">
+  <meta property="og:description" content="Upload HDFC, SBI, or ICICI statements and get spending insights — 100% offline, on your own computer.">
+  <meta property="og:site_name" content="KharchaLens">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="KharchaLens — Privacy-first expense analyzer">
+  <meta name="twitter:description" content="Offline expense insights from your Indian bank statements. No cloud, no tracking.">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+
+  <!-- Structured data for rich results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "KharchaLens",
+    "operatingSystem": "macOS, Linux, Windows",
+    "applicationCategory": "FinanceApplication",
+    "description": "Privacy-first, offline expense analyzer for HDFC, SBI, and ICICI Indian bank statements.",
+    "url": "https://aakraj.github.io/kharchalens/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "codeRepository": "https://github.com/aakraj/kharchalens"
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --teal: #0d9488;
+      --soft: #f3f4f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .hero { text-align: center; padding: 2.5rem 0 3rem; }
+    .logo { font-size: 3.5rem; }
+    h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 0.5rem 0 0.75rem; }
+    .tagline { font-size: 1.15rem; color: var(--muted); margin-bottom: 2rem; }
+    .badges { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem; }
+    .badges img { height: 24px; }
+    .cta {
+      display: inline-block;
+      margin-top: 1.75rem;
+      padding: 0.8rem 2rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .cta:hover { background: var(--teal); }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin: 3rem 0; }
+    .card { background: var(--soft); border-radius: 12px; padding: 1.25rem; }
+    .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .card p { color: var(--muted); font-size: 0.95rem; }
+    h2 { font-size: 1.4rem; margin: 2.5rem 0 1rem; }
+    code {
+      background: #eef2ff; padding: 0.15rem 0.4rem; border-radius: 4px;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #0f172a; color: #e2e8f0; padding: 1.25rem; border-radius: 10px;
+      overflow-x: auto; margin: 1rem 0; font-size: 0.9rem;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+    ul { padding-left: 1.25rem; }
+    .muted { color: var(--muted); }
+    footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--soft); color: var(--muted); font-size: 0.85rem; }
+    footer a { color: var(--accent); }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid #e5e7eb; }
+    th { background: var(--soft); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="logo">💰</div>
+      <h1>KharchaLens</h1>
+      <p class="tagline">Understand your spending. Protect your privacy.</p>
+      <div class="badges">
+        <img src="https://img.shields.io/badge/python-3.14-blue" alt="Python 3.14">
+        <img src="https://img.shields.io/badge/license-MIT-22c55e" alt="MIT License">
+        <img src="https://img.shields.io/badge/privacy-100%25%20offline-22c55e" alt="100% offline">
+      </div>
+      <br>
+      <a class="cta" href="https://github.com/aakraj/kharchalens">🚀 Get Started on GitHub</a>
+    </header>
+
+    <h2>What is KharchaLens?</h2>
+    <p>
+      KharchaLens is a <strong>privacy-first, offline personal finance analyzer</strong> for your
+      <strong>HDFC, SBI, and ICICI</strong> bank statements (<code>.xls</code>, <code>.xlsx</code>, <code>.pdf</code>).
+      Upload, parse, and get one clear answer: <em>where did my money go?</em>
+    </p>
+    <p>
+      Everything runs <strong>entirely on your computer</strong> — no account, no cloud, no tracking.
+      Your statements never leave your device.
+    </p>
+
+    <div class="feature-grid">
+      <div class="card">
+        <h3>📊 Spending Dashboard</h3>
+        <p>Total credit, debit, savings, savings rate, and average monthly spend.</p>
+      </div>
+      <div class="card">
+        <h3>🏪 Merchant Detection</h3>
+        <p>Automatic recognition of Zomato, Swiggy, Amazon, and 100+ merchants.</p>
+      </div>
+      <div class="card">
+        <h3>🧾 Category Breakdown</h3>
+        <p>Lifestyle, investment, insurance, transfers, cash withdrawals, and more.</p>
+      </div>
+      <div class="card">
+        <h3>🔒 Password Support</h3>
+        <p>Handles password-protected PDFs and encrypted Excel statements.</p>
+      </div>
+    </div>
+
+    <h2>How it works</h2>
+    <ol>
+      <li>Upload your <strong>HDFC</strong>, <strong>SBI</strong>, or <strong>ICICI</strong> statement — the bank is detected automatically.</li>
+      <li>Explore the dashboard: monthly spending trend, top merchants, categories, and every transaction.</li>
+      <li>Add your own merchant rules, or use the bundled 12-month sample statements to see it all instantly.</li>
+    </ol>
+
+    <h2>Try it</h2>
+    <p>No statement handy? Click <strong>Try it with a sample statement</strong> inside the app and pick an ICICI or HDFC format — the bundled 12-month samples show the full dashboard without uploading anything.</p>
+
+    <h2>Getting started</h2>
+    <pre><code>git clone https://github.com/aakraj/kharchalens.git
+cd kharchalens
+uv sync
+uv run streamlit run app.py</code></pre>
+
+    <h2>Supported statements</h2>
+    <table>
+      <thead>
+        <tr><th>Bank</th><th>.xls / .xlsx</th><th>.pdf</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HDFC</td><td>✓</td><td>✓</td></tr>
+        <tr><td>SBI</td><td>✓</td><td>✓</td></tr>
+        <tr><td>ICICI</td><td>✓</td><td>✓</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">⚠️ Prefer Excel (<code>.xls</code>/<code>.xlsx</code>) — PDFs can give unexpected results for unusual layouts.</p>
+
+    <footer>
+      <p>
+        KharchaLens is open source and released under the MIT License. Made with Streamlit.
+        Not affiliated with or endorsed by HDFC, ICICI, or SBI Bank.
+      </p>
+      <p><a href="https://github.com/aakraj/kharchalens">GitHub repository</a> · <a href="https://aakraj.github.io/kharchalens/sitemap.xml">Sitemap</a></p>
+    </footer>
+  </div>
+</body>
+</html>
