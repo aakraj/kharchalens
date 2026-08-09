@@ -17,7 +17,8 @@ class TransactionEnricher:
     ) -> Transaction:
 
         transaction.merchant = self._merchant_resolver.resolve(
-            transaction.narration
+            transaction.narration,
+            transaction.transaction_type,
         )
 
         self._classifier.classify(transaction)

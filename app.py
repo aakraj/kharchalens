@@ -1,3 +1,4 @@
+import io
 import tempfile
 from decimal import Decimal
 from pathlib import Path
@@ -25,6 +26,8 @@ from kharchalens.parser import (
     ExcelPasswordRequired,
     HdfcParser,
     HdfcPdfParser,
+    IciciParser,
+    IciciPdfParser,
     PdfIncorrectPassword,
     PdfPasswordRequired,
     SbiParser,
@@ -52,6 +55,19 @@ def _rules_signature() -> str:
     return digest.hexdigest()
 
 
+def _needs_password(file_bytes: bytes, suffix: str) -> bool:
+    """Detect whether an uploaded statement is encrypted, before showing the
+    password field. Excel: msoffcrypto container sniff; PDF: /Encrypt marker."""
+    if suffix == ".pdf":
+        return "/Encrypt" in file_bytes.decode("latin-1", errors="ignore")
+    try:
+        import msoffcrypto
+
+        return bool(msoffcrypto.OfficeFile(io.BytesIO(file_bytes)).is_encrypted())
+    except Exception:  # noqa: BLE001 - treat sniff failures as "not encrypted"
+        return False
+
+
 @st.cache_data(show_spinner=False, max_entries=8)
 def _parse_statement(
         file_bytes: bytes,
@@ -74,11 +90,17 @@ def _parse_statement(
             if suffix == ".pdf":
                 return SbiPdfParser().parse(temp_file, password=password)
             return SbiParser().parse(temp_file, password=password)
+        if which == "ICICI":
+            if suffix == ".pdf":
+                return IciciPdfParser().parse(temp_file, password=password)
+            return IciciParser().parse(temp_file, password=password)
         if suffix == ".pdf":
             return HdfcPdfParser().parse(temp_file, password=password)
         return HdfcParser().parse(temp_file, password=password)
 
-    for index, which in enumerate(("SBI", "HDFC")):
+    banks = ("ICICI", "SBI", "HDFC")
+
+    for index, which in enumerate(banks):
         try:
             transactions = _run(which)
             return [
@@ -92,7 +114,7 @@ def _parse_statement(
                 or "transaction table" in message
                 or "recognised" in message
             )
-            if not looks_like_mismatch or index == 1:
+            if not looks_like_mismatch or index == len(banks) - 1:
                 raise
             # Fall through to the other bank on the next iteration.
 
@@ -139,17 +161,24 @@ if uploaded is None:
 if uploaded:
     suffix = Path(uploaded.name).suffix.lower() if Path(uploaded.name).suffix else ".xls"
 
-    password = st.text_input(
-        "🔒 Statement Password",
-        type="password",
-        key="statement_password",
-        autocomplete="on",
-        width=280,
-        help=(
-            "Only needed for password-protected statements (PDFs or "
-            "encrypted Excel files). The bank is detected automatically."
-        ),
-    ) or None
+    needs_password = _needs_password(uploaded.getvalue(), suffix) or st.session_state.get(
+        "force_statement_password", False
+    )
+    if needs_password:
+        password = st.text_input(
+            "🔒 Statement Password",
+            type="password",
+            key="statement_password",
+            autocomplete="off",
+            width=280,
+            help=(
+                "This statement is encrypted. Enter its password — it is "
+                "only kept in memory and never stored."
+            ),
+        ) or None
+    else:
+        password = None
+        st.caption("✅ This statement is not password-protected.")
 
     try:
         with st.spinner(
@@ -407,6 +436,7 @@ if uploaded:
         render_footer()
 
     except PdfPasswordRequired:
+        st.session_state["force_statement_password"] = True
         st.error(
             "🔒 This PDF statement is password-protected. Enter its "
             "password in the Password field above."
@@ -414,6 +444,7 @@ if uploaded:
     except PdfIncorrectPassword:
         st.error("🔒 The password is incorrect. Please try again.")
     except ExcelPasswordRequired:
+        st.session_state["force_statement_password"] = True
         st.error(
             "🔒 This Excel statement is password-protected. Enter its "
             "password in the Password field above."

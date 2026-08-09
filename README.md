@@ -56,11 +56,11 @@ Everything runs **entirely on your computer** — no account, no cloud, no track
 
 ## Supported Statements
 
-- **HDFC** and **SBI** e-statements in `.xls`, `.xlsx`, or `.pdf` — the bank is detected automatically.
+- **HDFC**, **SBI**, and **ICICI** e-statements in `.xls`, `.xlsx`, or `.pdf` — the bank is detected automatically.
 - **Password-protected PDFs** and **encrypted Excel** files are supported — enter the password in the **Statement Password** field.
 - ⚠️ **Prefer Excel (`.xls`/`.xlsx`)** — PDFs can give unexpected results for unusual layouts.
 
-> Not affiliated with or endorsed by HDFC or SBI Bank. Always review sensitive statements before sharing them.
+> Not affiliated with or endorsed by HDFC, ICICI, or SBI Bank. Always review sensitive statements before sharing them.
 
 ---
 
@@ -115,7 +115,7 @@ Rules are simple YAML. **Recognized** merchants ship with the app in `kharchalen
 .
 ├── app.py                          # Streamlit entrypoint
 ├── kharchalens/
-│   ├── parser/                     # HDFC + SBI .xls/.xlsx/.pdf parsing
+│   ├── parser/                     # HDFC + SBI + ICICI .xls/.xlsx/.pdf parsing
 │   ├── merchant/                   # Normalization, rules, resolver, rule store
 │   ├── classifier/                 # Transaction categorization
 │   ├── enrichment/                 # Enriches parsed rows into Transactions
@@ -169,4 +169,4 @@ Released under the [MIT License](LICENSE).
 
 ---
 
-Made with **Streamlit**. Not affiliated with HDFC or SBI Bank.
+Made with **Streamlit**. Not affiliated with HDFC, ICICI, or SBI Bank.

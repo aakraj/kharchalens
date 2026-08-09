@@ -270,7 +270,7 @@ def render_footer() -> None:
             </div>
             <div class="footer-note">
                 KharchaLens · 100% offline — your bank statements never leave this device.<br>
-                Built with Streamlit. Not affiliated with or endorsed by HDFC or SBI Bank.
+                Built with Streamlit. Not affiliated with or endorsed by HDFC, ICICI, or SBI Bank.
             </div>
         </div>
         """,

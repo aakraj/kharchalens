@@ -144,6 +144,8 @@ class HdfcStatementParser(StatementParser):
             "%d/%m/%y",
             "%d-%m-%Y",
             "%d-%m-%y",
+            "%d.%m.%Y",
+            "%d.%m.%y",
         )
 
         for date_format in supported_formats:

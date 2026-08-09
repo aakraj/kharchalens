@@ -4,12 +4,21 @@ from pathlib import Path
 
 import yaml
 
+from kharchalens.models import TransactionType
+
 from .normalizer import NarrationNormalizer
 from .preprocessing import NarrationPreprocessor
 from .rules import MerchantRule
 
 
 class MerchantResolver:
+
+    _CREDIT_ONLY_MERCHANTS = frozenset(
+        {
+            "Dividend Credit",
+            "Interest Credit",
+        }
+    )
 
     def __init__(self) -> None:
 
@@ -45,7 +54,11 @@ class MerchantResolver:
 
         return "".join(text.split())
 
-    def resolve(self, narration: str) -> str:
+    def resolve(
+            self,
+            narration: str,
+            transaction_type: TransactionType | None = None,
+    ) -> str:
 
         normalized = NarrationNormalizer.normalize(narration)
         preprocessed = self._compact(
@@ -63,6 +76,11 @@ class MerchantResolver:
                 )
 
                 if compact_keyword and compact_keyword in preprocessed:
+                    if (
+                        transaction_type == TransactionType.DEBIT
+                        and rule.merchant in self._CREDIT_ONLY_MERCHANTS
+                    ):
+                        continue
                     return rule.merchant
 
         return "Unknown"
