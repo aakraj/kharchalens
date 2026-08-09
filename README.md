@@ -2,7 +2,7 @@
 
 *Understand your spending. Protect your privacy.*
 
-KharchaLens is a **privacy-first, offline personal finance analyzer** for your **HDFC and SBI bank statements** (`.xls` / `.xlsx` / `.pdf`). Upload, parse, and get one clear answer:
+KharchaLens is a **privacy-first, offline personal finance analyzer** for your **ICICI, HDFC, and SBI bank statements** (`.xls` / `.xlsx` / `.pdf`). Upload, parse, and get one clear answer:
 
 > **Where did my money go?**
 
@@ -38,12 +38,12 @@ Everything runs **entirely on your computer** — no account, no cloud, no track
 - **📊 Spending Dashboard** — total credit, total debit, savings, savings rate, and average monthly spend at a glance.
 - **📅 Monthly Spending Trend** — see how your spending shifts month to month.
 - **🏪 Merchant Detection** — automatic recognition of common merchants (Zomato, Swiggy, Amazon, …) with ranked Top Merchants and a full spend / average / transaction summary.
-- **🧾 Category Breakdown** — Lifestyle Spending, Investment, Insurance, Cash Withdrawal, Transfers, and more.
+- **🧾 Category Breakdown** — Lifestyle Spending, Investment, Family/Self Transfers, Insurance, Cash Withdrawal, and more.
 - **💡 Highlights** — top merchant, top category, savings rate, and statement period.
 - **📄 Transactions** — browse every dated transaction (narration, merchant, amount, balance).
 - **🛠 Developer Mode** — merchant-coverage metrics plus a review screen for unknown spending.
 - **🔒 Password support** — password-protected PDFs and encrypted Excel files.
-- **🚀 Sample statements** — click **Try it with a sample statement** on the landing screen and pick an ICICI or HDFC format; the bundled twelve-month statements show the full dashboard without uploading anything.
+- **🚀 Sample statements** — click **Try it with a sample statement** on the landing screen and pick an **ICICI** or **HDFC** format; the bundled twelve-month statements (230 transactions each) show the full dashboard without uploading anything.
 
 **Recognize your own merchants.** Unrecognized entries appear as **🟡 Needs Review**. Flip on Developer Mode, pick **Add new merchant…**, type a keyword and merchant name — choose **Local** (only you, saved to `local_data/merchants.local.yml`) or **Public** (saved to `kharchalens/config/merchants.yml`, benefits everyone). Matching transactions are recognized on the next import.
 
@@ -51,7 +51,14 @@ Everything runs **entirely on your computer** — no account, no cloud, no track
 
 ## Screenshots
 
-> *Coming soon — add a screenshot or two of the dashboard here.*
+<p float="left">
+  <img src="docs/screenshots/01-landing.png" alt="Landing screen with sample selector" width="49%">
+  <img src="docs/screenshots/02-dashboard.png" alt="Spending dashboard" width="49%">
+</p>
+<p float="left">
+  <img src="docs/screenshots/04-merchants.png" alt="Top merchants ranking" width="49%">
+  <img src="docs/screenshots/03-transactions.png" alt="Transactions table" width="49%">
+</p>
 
 ---
 
@@ -98,6 +105,20 @@ Open the URL Streamlit prints (usually `http://localhost:8501`).
 ## Your Merchant Rules
 
 Rules are simple YAML. **Recognized** merchants ship with the app in `kharchalens/config/merchants.yml`; **your personal** rules live in the gitignored `local_data/merchants.local.yml`. Developer Mode is the easiest way to add them — [see Features](#features).
+
+Each rule maps a merchant name to a list of `contains` keywords matched against the normalized narration:
+
+```yaml
+rules:
+  - merchant: Your Coffee Shop
+    contains:
+      - COFFEE
+      - CUPJOE
+```
+
+A transaction narration is normalized (uppercased, whitespace collapsed), then matched **word-by-word** against each keyword — so `CUPJOE` won't match inside `NOTACUPJOE`. The first matching rule wins; unmatched transactions resolve to **Unknown** and appear under 🟡 **Needs Review**. Personal rules in `local_data/merchants.local.yml` are loaded on top of the built-in ones, so a keyword appearing in a built-in rule still wins even if your local rule has the same keyword — pick discriminating keywords for your own rules.
+
+> ⚠️ Rule files are resolved relative to the **current working directory** — always launch the app from the repository root (see [Run the app](#run-the-app)), or your local rules will be silently ignored.
 
 ---
 
