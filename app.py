@@ -10,11 +10,14 @@ from kharchalens.analytics import merchant_coverage, unknown_spending
 from kharchalens.dashboard import (
     apply_theme,
     build_summary,
+    render_balance_trajectory,
     render_category_spending,
     render_footer,
     render_highlights,
+    render_income_expense,
     render_merchant_summary,
     render_monthly_spending,
+    render_recurring_subscriptions,
     render_top_merchants,
 )
 from kharchalens.dashboard.summary import format_inr
@@ -296,6 +299,8 @@ if file_bytes is not None:
 
             #==========================================
             render_monthly_spending(transactions)
+            render_income_expense(transactions)
+            render_balance_trajectory(transactions)
             st.subheader("🏪 Top Merchants")
             selection = st.radio("Merchant ranking", ["Top 10", "Top 20", "Top 50", "All"], horizontal=True, label_visibility="collapsed")
             limit_map = {"Top 10": 10, "Top 20": 20, "Top 50": 50, "All": None}
@@ -303,6 +308,7 @@ if file_bytes is not None:
             render_top_merchants(transactions, limit)
             render_merchant_summary(transactions, limit)
             render_category_spending(transactions)
+            render_recurring_subscriptions(transactions)
             render_highlights(transactions,summary)
             #==========================================
 

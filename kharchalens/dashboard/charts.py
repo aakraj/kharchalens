@@ -6,9 +6,14 @@ from decimal import Decimal
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
-from kharchalens.analytics import top_merchants
+from kharchalens.analytics import (
+    balance_trajectory,
+    monthly_cash_flow,
+    top_merchants,
+)
 from kharchalens.dashboard.summary import format_inr
 from kharchalens.dashboard.theme import ACCENT, MONEY_FONT, TEAL, YELLOW
 from kharchalens.models import Transaction, TransactionType
@@ -26,6 +31,7 @@ _NEEDS_REVIEW = "🟡 Needs Review"
 
 _LIGHT_BLUE = "#93C5FD"
 _DEEP_BLUE = "#2563EB"
+_SAVINGS = "#7C3AED"
 
 
 def _lerp_hex(left: str, right: str, t: float) -> str:
@@ -123,6 +129,143 @@ def render_monthly_spending(transactions: list[Transaction]) -> None:
         },
         **_LAYOUT,
     )
+    st.plotly_chart(fig, width="stretch")
+
+
+def render_income_expense(transactions: list[Transaction]) -> None:
+    rows = monthly_cash_flow(transactions)
+
+    if not rows:
+        return
+
+    months = [row["Month"] for row in rows]
+    years = {month[:4] for month in months}
+    show_year = len(years) > 1
+
+    def _month_label(month: str) -> str:
+        year, mon = month.split("-")
+        return date(int(year), int(mon), 1).strftime(
+            "%b %y" if show_year else "%b"
+        )
+
+    labels = {month: _month_label(month) for month in months}
+
+    tidy = pd.DataFrame(
+        [
+            {
+                "Month": row["Month"],
+                "MonthLabel": labels[row["Month"]],
+                "Series": "Income",
+                "Amount": float(row["Income"]),
+                "Label": format_inr(row["Income"]),
+            }
+            for row in rows
+        ]
+        + [
+            {
+                "Month": row["Month"],
+                "MonthLabel": labels[row["Month"]],
+                "Series": "Expense",
+                "Amount": float(row["Expense"]),
+                "Label": format_inr(row["Expense"]),
+            }
+            for row in rows
+        ]
+    )
+
+    fig = px.bar(
+        tidy,
+        x="Month",
+        y="Amount",
+        color="Series",
+        barmode="group",
+        custom_data=["MonthLabel", "Label"],
+        color_discrete_map={"Income": TEAL, "Expense": ACCENT},
+    )
+    fig.update_traces(
+        marker_line_width=0,
+        marker_cornerradius=6,
+        hovertemplate=(
+            "%{customdata[0]}<br>%{fullData.name}: "
+            "%{customdata[1]}<extra></extra>"
+        ),
+    )
+
+    savings_labels = [format_inr(row["Savings"]) for row in rows]
+    fig.add_trace(
+        go.Scatter(
+            x=months,
+            y=[float(row["Savings"]) for row in rows],
+            mode="lines+markers",
+            name="Savings",
+            customdata=[
+                [labels[month], label]
+                for month, label in zip(months, savings_labels)
+            ],
+            line={"color": _SAVINGS, "width": 3},
+            marker={"size": 7, "color": _SAVINGS},
+            hovertemplate=(
+                "%{customdata[0]}<br>Savings: "
+                "%{customdata[1]}<extra></extra>"
+            ),
+        )
+    )
+    fig.add_hline(
+        y=0,
+        line_dash="dot",
+        line_color="rgba(31, 41, 55, 0.35)",
+        line_width=1,
+    )
+
+    fig.update_layout(
+        xaxis={
+            "tickmode": "array",
+            "tickvals": months,
+            "ticktext": [labels[month] for month in months],
+            "tickangle": 0,
+            "automargin": True,
+        },
+        legend={"orientation": "h", "yanchor": "bottom", "y": 1.01},
+        height=360,
+        **_LAYOUT,
+    )
+
+    st.subheader("💵 Income vs Expense")
+    st.plotly_chart(fig, width="stretch")
+
+
+def render_balance_trajectory(transactions: list[Transaction]) -> None:
+    points = balance_trajectory(transactions)
+
+    if not points:
+        return
+
+    df = pd.DataFrame(
+        {
+            "Date": [point.date for point in points],
+            "Balance": [float(point.balance) for point in points],
+            "Label": [format_inr(point.balance) for point in points],
+        }
+    )
+
+    fig = px.area(
+        df,
+        x="Date",
+        y="Balance",
+        custom_data=["Label"],
+    )
+    fig.update_traces(
+        line_color=TEAL,
+        fillcolor="rgba(13, 148, 136, 0.18)",
+        hovertemplate="%{x|%d %b %Y}<br>%{customdata[0]}<extra></extra>",
+    )
+    fig.update_layout(
+        height=320,
+        xaxis={"rangeslider": {"visible": False}},
+        **_LAYOUT,
+    )
+
+    st.subheader("💰 Balance Trajectory")
     st.plotly_chart(fig, width="stretch")
 
 
